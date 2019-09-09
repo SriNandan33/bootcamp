@@ -1,0 +1,12 @@
+<html>
+    <head>
+        {% if title %}
+            <title>{{ title }} | Bootcamp</title>
+        {% else %}
+            <title>Welcome to Bootcamp</title>
+        {% endif %}
+    </head>
+    <body>
+        {% block content %}{% endblock content %}
+    </body>
+</html>
