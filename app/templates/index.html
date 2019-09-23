@@ -3,6 +3,7 @@
 {% block content %}
     <h1> Hello {{ current_user.username }}</h1><hr />
     <div>
+        {% if form %}
         <form method="POST">
             {{ form.hidden_tag() }}
             <p>
@@ -13,15 +14,11 @@
                 {% endfor %}
             </p>
             <p>{{ form.submit() }}</p>
-            
         </form>
+        {% endif %}
     </div>
     {% for post in posts %}
-    <div>
-        <h2>{{ post.author.username}}</h2>
-            <p>{{ post.body }}</p>
-        </h2>
-    </div>
+        {% include "_post.html" %}
     {% endfor %}
 {% endblock content %}
   

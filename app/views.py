@@ -24,17 +24,14 @@ def index():
         db.session.commit()
         flash("Your post is now live!")
         return redirect(url_for('index'))
-    posts = [
-        {
-            'author': {'username': 'Nandu'},
-            'body': 'This post is written by Nandu'
-        },
-        {
-            'author': {'username': 'Srinivas'},
-            'body': 'This post is writeen by Srinivas'
-        }
-    ]
+    posts = current_user.feed()
     return render_template('index.html', title="Feed", posts=posts, form=form)
+
+@app.route('/explore')
+@login_required
+def explore():
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
+    return render_template('index.html', title="Explore", posts=posts)
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
@@ -78,16 +75,7 @@ def register():
 @login_required
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
-    posts = [
-        {
-            'author': user,
-            'body': 'This is post 1'
-        },
-        {
-            'author': user,
-            'body': 'This is post 2'
-        }
-    ]
+    posts = Post.query.filter_by(user_id=user.id)
     return render_template('user.html', user=user, posts=posts)
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
