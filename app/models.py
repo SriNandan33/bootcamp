@@ -54,7 +54,7 @@ class User(UserMixin, db.Model):
             followers, (followers.c.followed_id == Post.user_id)).filter(
                 followers.c.follower_id == self.id)
         own = Post.query.filter_by(user_id=self.id)
-        return followed.union(own).order_by(Post.timestamp.desc()).all()
+        return followed.union(own).order_by(Post.timestamp.desc())
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
