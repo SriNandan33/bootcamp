@@ -1,10 +1,9 @@
-<table class="table">
-    <tr valign="top">
-        <td style="border:0px;"><img src="{{ user.avatar(128) }}"></td>
-        <td style="border:0px;">
-            <h1>User: {{ user.username }}</h1>
+<div>
+    <div>
+        <div><img class="img-thumbnail" style="height:40px; width: 40px;"src="{{ user.avatar(128) }}"></div>
+        <div>
+            <b>{{ user.username }}</b>
             {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
-            {% if user.last_seen %}<p>Last seen on: {{ moment(user.last_seen).format('LLL') }}</p>{% endif %}
             <p>{{ user.followers.count()}} followers, {{ user.followed.count()}} following.</p>
             {% if user != current_user %}
                 {% if current_user.is_following(user) %}
@@ -13,6 +12,6 @@
                 <p><a href="{{ url_for('follow', username=user.username)}}">Follow</a></p>
                 {% endif %}
             {% endif %}
-        </td>
-    </tr>
-</table>
+        </div>
+    </div>
+</div>

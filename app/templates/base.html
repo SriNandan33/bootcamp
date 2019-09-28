@@ -67,7 +67,6 @@
                         `/user/${element.first().text().trim()}/popup`
                     )
                         .done(function (data) {
-                            console.log('data is', data)
                             xhr = null;
                             element.popover({
                                 trigger: 'manual',
@@ -76,8 +75,6 @@
                                 container: element,
                                 content: data,
                             }).popover('show');
-                            console.log('element data is')
-                            console.log(element.html())
                             flask_moment_render_all();
                         })
                 }, 1000)
