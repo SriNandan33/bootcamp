@@ -3,7 +3,9 @@
         <td><img src="{{ post.author.avatar(36) }}"></td>
         <td></td>
         <td>
-            <a href="{{ url_for('user', username=post.author.username)}}"><b>{{ post.author.username }}</b></a>
+            <span class="user_popup">
+                <a href="{{ url_for('user', username=post.author.username)}}"><b>{{ post.author.username }}</b></a>
+            </span>
             <span>{{ moment(post.timestamp).fromNow() }}</span>
             <br>{{ post.body }}
         </td>

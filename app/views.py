@@ -101,6 +101,12 @@ def user(username):
     return render_template('user.html', user=user, posts=posts.items, \
         prev_url=prev_url, next_url=next_url)
 
+@app.route('/user/<username>/popup')
+@login_required
+def user_popup(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    return render_template('user_popup.html', user=user)
+
 @app.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
     form = EditProfileForm(current_user.username)

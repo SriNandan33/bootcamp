@@ -43,17 +43,61 @@
         {% block content %}{% endblock content %}
     </div>
 </body>
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
     integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
     crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
     crossorigin="anonymous"></script>
-{% block scripts %}
+
 {{ moment.include_moment() }}
-{% endblock scripts %}
+<script>
+    $(function () {
+        var timer = null;
+        var xhr = null;
+        $(".user_popup").hover(
+            function (event) {
+                // mouse in handler
+                var element = $(event.currentTarget);
+                timer = setTimeout(function () {
+                    timer = null;
+                    xhr = $.ajax(
+                        `/user/${element.first().text().trim()}/popup`
+                    )
+                        .done(function (data) {
+                            console.log('data is', data)
+                            xhr = null;
+                            element.popover({
+                                trigger: 'manual',
+                                html: true,
+                                animation: false,
+                                container: element,
+                                content: data,
+                            }).popover('show');
+                            console.log('element data is')
+                            console.log(element.html())
+                            flask_moment_render_all();
+                        })
+                }, 1000)
+
+            },
+            function (event) {
+                // mouseout handler
+                var element = $(event.currentTarget)
+                if (timer) {
+                    clearTimeout(timer);
+                    timer = null;
+                } else if (xhr) {
+                    xhr.abort();
+                    xhr = null;
+                } else {
+                    element.popover('dispose');
+                }
+            }
+        )
+    })
+</script>
 
 </html>
