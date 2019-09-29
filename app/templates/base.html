@@ -21,13 +21,13 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 {% if current_user.is_anonymous %}
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('login')}}">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login')}}">Login</a></li>
                 {% else %}
                 <li class="nav-item {% if request.endpoint == 'explore' %}active{% endif %}"><a class="nav-link"
                         href="{{ url_for('explore')}}">Explore</a></li>
                 <li class="nav-item {% if request.endpoint == 'user' %}active{% endif %}"><a class="nav-link"
                         href="{{ url_for('user', username=current_user.username)}}">Profile</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('logout')}}">Logout</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout')}}">Logout</a></li>
                 {% endif %}
             </ul>
         </div>

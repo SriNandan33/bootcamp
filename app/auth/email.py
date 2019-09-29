@@ -19,6 +19,6 @@ def send_password_reset_email(user):
         "[Bootcamp] Reset your password",
         sender=app.config["ADMIN_EMAIL"],
         recipients=[user.email],
-        text_body=render_template('email/reset_password.txt', user=user, token=token),
-        html_body=render_template('email/reset_password.html', user=user, token=token)
+        text_body=render_template('auth/email/reset_password.txt', user=user, token=token),
+        html_body=render_template('auth/email/reset_password.html', user=user, token=token)
     )
