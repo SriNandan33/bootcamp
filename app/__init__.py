@@ -17,5 +17,8 @@ login.login_view = 'login'
 mail = Mail(app)
 moment = Moment(app)
 
+from app.errors import bp as errors_bp
+app.register_blueprint(errors_bp)
 
-from app import views, models, errors
+
+from app import views, models
