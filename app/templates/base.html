@@ -12,7 +12,7 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{{ url_for('index')}}">Bootcamp</a>
+        <a class="navbar-brand" href="{{ url_for('core.index')}}">Bootcamp</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -24,9 +24,9 @@
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login')}}">Login</a></li>
                 {% else %}
                 <li class="nav-item {% if request.endpoint == 'explore' %}active{% endif %}"><a class="nav-link"
-                        href="{{ url_for('explore')}}">Explore</a></li>
+                        href="{{ url_for('core.explore')}}">Explore</a></li>
                 <li class="nav-item {% if request.endpoint == 'user' %}active{% endif %}"><a class="nav-link"
-                        href="{{ url_for('user', username=current_user.username)}}">Profile</a></li>
+                        href="{{ url_for('core.user', username=current_user.username)}}">Profile</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout')}}">Logout</a></li>
                 {% endif %}
             </ul>

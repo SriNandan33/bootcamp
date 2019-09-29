@@ -7,9 +7,9 @@
             <p>{{ user.followers.count()}} followers, {{ user.followed.count()}} following.</p>
             {% if user != current_user %}
                 {% if current_user.is_following(user) %}
-                <p><a href="{{ url_for('unfollow', username=user.username)}}">Unfollow</a></p>
+                <p><a href="{{ url_for('core.unfollow', username=user.username)}}">Unfollow</a></p>
                 {% else %}
-                <p><a href="{{ url_for('follow', username=user.username)}}">Follow</a></p>
+                <p><a href="{{ url_for('core.follow', username=user.username)}}">Follow</a></p>
                 {% endif %}
             {% endif %}
         </div>
