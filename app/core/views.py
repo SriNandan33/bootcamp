@@ -40,9 +40,9 @@ def explore():
     posts = Post.query.order_by(Post.timestamp.desc()).paginate(
         page, current_app.config["POSTS_PER_PAGE"], False
     )
-    prev_url = url_for('explore', page=posts.prev_num)\
+    prev_url = url_for('core.explore', page=posts.prev_num)\
         if posts.has_prev else None
-    next_url = url_for('explore', page=posts.next_num)\
+    next_url = url_for('core.explore', page=posts.next_num)\
         if posts.has_next else None
     return render_template('index.html', title="Explore", posts=posts.items, \
         prev_url=prev_url, next_url=next_url)
@@ -88,24 +88,24 @@ def follow(username):
     user = User.query.filter_by(username=username).first()
     if not user:
         flash("User not found")
-        return redirect(url_for("index"))
+        return redirect(url_for("core.index"))
     if user == current_user:
         flash("You can't follow yourself")
         return redirect(url_for('core.user', username=username))
     current_user.follow(user)
     db.session.commit()
     flash(f"You are following {username}!")
-    return redirect(url_for("user", username=username))
+    return redirect(url_for("core.user", username=username))
 
 @bp.route('/unfollow/<username>')
 def unfollow(username):
     user = User.query.filter_by(username=username).first()
     if not user:
         flash("User not found")
-        return redirect(url_for("index"))
+        return redirect(url_for("core.index"))
     if user == current_user:
         flash("You can unfollow yourself")
-        return redirect(url_for("user", username=username))
+        return redirect(url_for("core.user", username=username))
     current_user.unfollow(user)
     db.session.commit()
     flash(f"You unfollowed {username}")
