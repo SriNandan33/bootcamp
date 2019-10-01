@@ -44,3 +44,10 @@ A Minimal social networking application using Flask
 	```
     flask run
     ```
+
+    Now go to http://localhost:5000 to see it live.
+
+
+# Contributing
+
+There are no contributing guide lines for now. Please browse through the issues, if you find any of them interesting fork this repo, make changes and create PR.
