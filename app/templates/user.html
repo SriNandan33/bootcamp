@@ -12,9 +12,13 @@
                 {% if user == current_user %}
                 <p><a href="{{ url_for('core.edit_profile')}}">Edit Profile</a></p>
                 {% elif current_user.is_following(user) %}
-                <p><a href="{{ url_for('core.unfollow', username=user.username)}}">Unfollow</a></p>
+                <p onclick="unFollowUser()">
+                    <a href="">Unfollow</a>
+                </p>
                 {% else %}
-                <p><a href="{{ url_for('core.follow', username=user.username)}}">Follow</a></p>
+                <p onclick="followUser()">
+                    <a href="">Follow</a>
+                </p>
                 {% endif %}
             </td>
         </tr>
