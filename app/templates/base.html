@@ -101,7 +101,7 @@
         )
     })
 
-    const user = "{{current_user.username}}"
+    const user = "{{user.username}}"
     const Axios = window.axios;
 
     function flashMessages(data){
@@ -117,7 +117,10 @@
         return html;
     };
 
-    function ajaxGetWithFlash(endpoint) {
+    function ajaxGetWithFlash(follow = true) {
+        const endpoint = follow ? `/follow/${user}` : `/unfollow/${user}`;
+        const link = follow ? '<p onclick="unFollowUser()">Unfollow</p>' : '<p onclick="followUser()">Follow</p>';
+
         Axios.get(endpoint).then((response) => {
             const messages = response.data.flash_messages;
             const redirect = response.data.redirect;
@@ -126,17 +129,18 @@
                 window.location.href = redirect;
             }
             $('#flash').html(flashMessages(messages));
+            $('.follow-link').html(link)
         }).catch((error) => {
             console.error(`Error: ${error}, please contact the administrator`);
         });
     }
 
     function unFollowUser() {
-        ajaxGetWithFlash(`/follow/${user}`)
+        ajaxGetWithFlash(false)
     }
 
     function followUser() {
-        ajaxGetWithFlash(`/unfollow/${user}`)
+        ajaxGetWithFlash(true)
     }
 </script>
 
