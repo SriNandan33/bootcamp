@@ -44,6 +44,13 @@ A Minimal social networking application using Flask
 
 6. **Run the application**
 
+    You should run commands below to create and apply migrations. 
+    Database and tables will be created.
+    
+     ```
+    flask db migrate
+    flask db upgrade 
+    ```
 	```
     flask run
     ```
