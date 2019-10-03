@@ -40,7 +40,7 @@ A Minimal social networking application using Flask
 
 	```
 
-		Note: I am currently using google smtp servie to send emails ( will be replaced soon). For testing purspose recipient might want to allow less secure apps to send emails to his account (https://myaccount.google.com/lesssecureapps).
+		Note: I am currently using google smtp service to send emails ( will be replaced soon). For testing purspose recipient might want to allow less secure apps to send emails to his account (https://myaccount.google.com/lesssecureapps).
 
 6. **Run the application**
 
