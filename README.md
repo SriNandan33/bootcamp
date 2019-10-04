@@ -37,6 +37,7 @@ A Minimal social networking application using Flask
 	MAIL_PASSWORD=<your-mail-password>
 	SECRET_KEY=<secret-key>
 	ADMIN_EMAIL=<your-email-address>
+	FACEBOOK_APP_ID=<your-app-facebook-id>
 
 	```
 
