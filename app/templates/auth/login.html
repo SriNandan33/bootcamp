@@ -21,9 +21,39 @@
         <p>{{ form.remember_me()}} {{ form.remember_me.label }}</p>
         <p> {{ form.submit() }}</p>
     </form>
+    <div id="fb-root"></div>
+    <div class="fb-login-button" scope="email" data-width="" data-size="large" data-button-type="continue_with" data-auto-logout-link="false" data-use-continue-as="true" onlogin="checkLoginState();"></div>
     <p>
         Forgot Your Password?
         <a href="{{ url_for('auth.reset_password_request') }}">Click to Reset It</a>
     </p>
     <p>New user? <a href="{{ url_for('auth.register')}}">Click to Register</a></p>
+
+    <form method="post" action="/auth/facebook_login" style="display: none">
+        <input type="hidden" name="access_token" value="" id="facebook-access-token-field" required>
+        <input type="submit" id="facebook-form-submit">
+    </form>
+    <span style="color: red; display: none" id='access-token-error-msg'>Facebook login canceled or invalid</span>
+
+    <script async>
+        window.fbAsyncInit = function() {
+           FB.init({
+            appId      : '{{app_id}}',
+            cookie     : true,
+            xfbml      : true,
+            version    : 'v4.0'
+          });
+        };
+
+        function checkLoginState() {               // Called when a person is finished with the Login Button.
+            var accessToken = FB.getAccessToken();
+            if (accessToken) {
+                $('#facebook-access-token-field').val(accessToken);
+                $('#facebook-form-submit').click();
+            } else {
+                $('#access-token-error-msg').style = '';
+            }
+        }
+    </script>
+    <script async defer src="https://connect.facebook.net/en_US/sdk.js"></script>
 {% endblock content %}
