@@ -8,3 +8,4 @@ Flask-WTF==0.14.2
 PyJWT==1.7.1
 pylint==2.3.1
 python-dotenv==0.10.3
+requests==2.22.0
