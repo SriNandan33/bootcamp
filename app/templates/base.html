@@ -54,8 +54,8 @@
     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
     crossorigin="anonymous"></script>
 
+<script src="{{ url_for('static', filename='js/follow_unfollow.js') }}"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
 
 {{ moment.include_moment() }}
 <script>
@@ -100,48 +100,8 @@
             }
         )
     })
-
-    const user = "{{user.username}}"
-    const Axios = window.axios;
-
-    function flashMessages(data){
-        html = '';
-
-        for (i = 0; i < data.length; i++) {
-            html += `
-            <div class="alert alert-${data[i]['type']}">
-                <a href="#" class="close" data-dismiss="alert">&times;</a>
-                ${data[i].message}
-            </div>`;
-        }
-        return html;
-    };
-
-    function ajaxGetWithFlash(follow = true) {
-        const endpoint = follow ? `/follow/${user}` : `/unfollow/${user}`;
-        const link = follow ? '<p onclick="unFollowUser()">Unfollow</p>' : '<p onclick="followUser()">Follow</p>';
-
-        Axios.get(endpoint).then((response) => {
-            const messages = response.data.flash_messages;
-            const redirect = response.data.redirect;
-
-            if (redirect) {
-                window.location.href = redirect;
-            }
-            $('#flash').html(flashMessages(messages));
-            $('.follow-link').html(link)
-        }).catch((error) => {
-            console.error(`Error: ${error}, please contact the administrator`);
-        });
-    }
-
-    function unFollowUser() {
-        ajaxGetWithFlash(false)
-    }
-
-    function followUser() {
-        ajaxGetWithFlash(true)
-    }
 </script>
+
+{% block extra_script %}{% endblock %}
 
 </html>
