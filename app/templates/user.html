@@ -16,13 +16,13 @@
                         </a>
                     </p>
                 {% elif current_user.is_following(user) %}
-                    <div class="follow-link">
-                        <p onclick="unFollowUser()">Unfollow</p>                    
-                    </div>
+                    {% with user=user %}
+                        {% include 'snippets/unfollow_button.html' %}
+                    {% endwith %}
                 {% else %}
-                    <div class="follow-link">
-                        <p onclick="followUser()">Follow</p>
-                    </div>
+                    {% with user=user %}
+                        {% include 'snippets/follow_button.html' %}
+                    {% endwith %}
                 {% endif %}
             </td>
         </tr>
