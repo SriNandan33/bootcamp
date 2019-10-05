@@ -111,7 +111,6 @@ def follow(username):
 
     if not user:
         flash_messages = ajax_flash('info', 'User not found', flash_messages)
-        data['redirect'] = url_for('core.index')
     elif user == current_user:
         flash_messages = ajax_flash('info', 'You can\'t follow yourself!', flash_messages)
     else:

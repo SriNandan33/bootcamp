@@ -55,53 +55,7 @@
     crossorigin="anonymous"></script>
 
 <script src="{{ url_for('static', filename='js/follow_unfollow.js') }}"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-
-{{ moment.include_moment() }}
-<script>
-    $(function () {
-        var timer = null;
-        var xhr = null;
-        $(".user_popup").hover(
-            function (event) {
-                // mouse in handler
-                var element = $(event.currentTarget);
-                timer = setTimeout(function () {
-                    timer = null;
-                    xhr = $.ajax(
-                        `/user/${element.first().text().trim()}/popup`
-                    )
-                        .done(function (data) {
-                            xhr = null;
-                            element.popover({
-                                trigger: 'manual',
-                                html: true,
-                                animation: false,
-                                container: element,
-                                content: data,
-                            }).popover('show');
-                            flask_moment_render_all();
-                        })
-                }, 1000)
-
-            },
-            function (event) {
-                // mouseout handler
-                var element = $(event.currentTarget)
-                if (timer) {
-                    clearTimeout(timer);
-                    timer = null;
-                } else if (xhr) {
-                    xhr.abort();
-                    xhr = null;
-                } else {
-                    element.popover('dispose');
-                }
-            }
-        )
-    })
-</script>
-
 {% block extra_script %}{% endblock %}
+{{ moment.include_moment() }}
 
 </html>
