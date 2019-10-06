@@ -1,5 +1,3 @@
-const Axios = window.axios;
-
 function flashMessages(data){
     let html = '';
 
@@ -16,6 +14,7 @@ function flashMessages(data){
 function ajaxGetWithFlash(target_user, follow) {
     const endpoint = follow ? `/follow/${target_user}` : `/unfollow/${target_user}`;
     const buttonTxt = follow ? "Unfollow" : "Follow";
+    const Axios = window.axios;
 
     const linkHTML = 
         `<button data-follow="${!follow}" data-user="${target_user}" class="btn btn-info pt-1 pb-1">
@@ -26,7 +25,7 @@ function ajaxGetWithFlash(target_user, follow) {
         const messages = response.data['flash_messages'];
         const flashBox = $('#flash');
         const followLinks = $('.follow-link');
-        const popup = $('.popup');
+        const popover = $('.popover');
 
         followLinks.each((index, _this) => {
             _this.innerHTML = linkHTML;
@@ -34,8 +33,9 @@ function ajaxGetWithFlash(target_user, follow) {
         if (flashBox) {
             flashBox.html(flashMessages(messages))
         }
-        if (popup) {
-            popup.remove();
+        
+        if (popover) {
+            popover.remove();
         }
     }).catch((error) => {
         console.error(`Error: ${error}, please contact the administrator`);
@@ -64,4 +64,4 @@ $(function() {
             unFollowUser(target_user);
         }
     })
-})
+});

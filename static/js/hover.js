@@ -16,8 +16,6 @@ $(function () {
     const userPopup = $('.user_popup');
 
     userPopup.on('mouseenter', (event) => {
-        console.log('Mouse Enter');
-
         let element = $(event.currentTarget);
         const username = element.first().text().trim();
         xhr = Axios.CancelToken.source();
@@ -33,8 +31,6 @@ $(function () {
     });
 
     userPopup.on('mouseleave', (event) => {
-        console.log('Mouse Leave');
-
         let element = $(event.currentTarget);
 
         if (timer) {
