@@ -1,6 +1,14 @@
 from datetime import datetime
-from flask import render_template, flash, redirect, \
-    url_for, request, current_app
+
+from flask import (
+    make_response,
+    current_app,
+    flash,
+    redirect,
+    render_template,
+    request,
+    url_for
+)
 from flask_login import current_user, login_required
 from app import db
 from app.core import bp
@@ -23,7 +31,7 @@ def index():
         post = Post(body=form.post.data, author=current_user)
         db.session.add(post)
         db.session.commit()
-        flash("Your post is now live!")
+        flash("Your post is now live!", "success")
         return redirect(url_for('core.index'))
     posts = current_user.feed().paginate(page, current_app.config["POSTS_PER_PAGE"], False)
     prev_url = url_for('core.index', page=posts.prev_num)\
@@ -75,7 +83,7 @@ def edit_profile():
         current_user.username = form.username.data
         current_user.about_me = form.bio.data
         db.session.commit()
-        flash("Profile updated successfully!")
+        flash("Profile updated successfully!", "success")
         return redirect(url_for('core.user', username=current_user.username))
     elif request.method == 'GET':
         form.username.data = current_user.username
@@ -83,30 +91,60 @@ def edit_profile():
     return render_template('edit_profile.html', form=form, title="Edit Profile")
 
 
+def ajax_flash(msg_type, message, message_list):
+    message_list.append({
+        'type': msg_type,
+        'message': message
+    })
+    return message_list
+
+
 @bp.route('/follow/<username>')
 def follow(username):
+    flash_messages = []
+
+    data = {
+        'redirect': ''
+    }
+
     user = User.query.filter_by(username=username).first()
+
     if not user:
-        flash("User not found")
-        return redirect(url_for("core.index"))
-    if user == current_user:
-        flash("You can't follow yourself")
-        return redirect(url_for('core.user', username=username))
-    current_user.follow(user)
-    db.session.commit()
-    flash(f"You are following {username}!")
-    return redirect(url_for("core.user", username=username))
+        flash_messages = ajax_flash('info', 'User not found', flash_messages)
+    elif user == current_user:
+        flash_messages = ajax_flash('info', 'You can\'t follow yourself!', flash_messages)
+    else:
+        current_user.follow(user)
+        db.session.commit()
+        flash_messages = ajax_flash('success', f'You are following {username}', flash_messages)
+
+    data['flash_messages'] = flash_messages
+
+    r = make_response(data)
+    r.mimetype = 'application/json'
+    return r
+
 
 @bp.route('/unfollow/<username>')
 def unfollow(username):
+    flash_messages = [];
+
+    data = {
+        'redirect': ''
+    }
     user = User.query.filter_by(username=username).first()
     if not user:
-        flash("User not found")
-        return redirect(url_for("core.index"))
-    if user == current_user:
-        flash("You can unfollow yourself")
-        return redirect(url_for("core.user", username=username))
-    current_user.unfollow(user)
-    db.session.commit()
-    flash(f"You unfollowed {username}")
-    return redirect(url_for('core.user', username=username))
+        flash_messages = ajax_flash('info', 'User not found', flash_messages)
+        data['redirect'] = url_for('core.index')
+    elif user == current_user:
+        flash_messages = ajax_flash('info', 'You can\'t unfollow yourself', flash_messages)
+    else:
+        current_user.unfollow(user)
+        db.session.commit()
+        flash_messages = ajax_flash('success', f'You unfollowed {username}', flash_messages)
+
+    data['flash_messages'] = flash_messages
+
+    r = make_response(data)
+    r.mimetype = 'application/json'
+    return r
