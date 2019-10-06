@@ -31,7 +31,7 @@ def index():
         post = Post(body=form.post.data, author=current_user)
         db.session.add(post)
         db.session.commit()
-        flash("Your post is now live!")
+        flash("Your post is now live!", "success")
         return redirect(url_for('core.index'))
     posts = current_user.feed().paginate(page, current_app.config["POSTS_PER_PAGE"], False)
     prev_url = url_for('core.index', page=posts.prev_num)\
@@ -83,7 +83,7 @@ def edit_profile():
         current_user.username = form.username.data
         current_user.about_me = form.bio.data
         db.session.commit()
-        flash("Profile updated successfully!")
+        flash("Profile updated successfully!", "success")
         return redirect(url_for('core.user', username=current_user.username))
     elif request.method == 'GET':
         form.username.data = current_user.username

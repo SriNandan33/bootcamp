@@ -1,29 +1,74 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Sign In</h1>
-    <form action="" method="POST" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label}}<br />
-            {{ form.username(size=32)}}
-            {% for error in form.username.errors %}
-                <span style="color: red;">{{ error }}</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label}}<br />
-            {{ form.password(size=32)}}
-            {% for error in form.password.errors %}
-                <span style="color: red;">{{ error }}</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.remember_me()}} {{ form.remember_me.label }}</p>
-        <p> {{ form.submit() }}</p>
-    </form>
-    <p>
-        Forgot Your Password?
-        <a href="{{ url_for('auth.reset_password_request') }}">Click to Reset It</a>
-    </p>
-    <p>New user? <a href="{{ url_for('auth.register')}}">Click to Register</a></p>
+    <div class="container login-container">
+        <div class="row">
+            <div class="col-md-6 login-form-1">
+                <h3>Sign In</h3>
+
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Your Email *" value=""/>
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control" placeholder="Your Password *"
+                           value=""/>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btnSubmit" value="Login"/>
+                </div>
+                <div class="form-group">
+                    <a href="#" class="btnForgetPwd">Forget Password?</a>
+                </div>
+
+            </div>
+            <div class="col-md-6 login-form-2">
+                <div class="login-logo">
+                    <img src="https://image.ibb.co/n7oTvU/logo_white.png" alt=""/>
+                </div>
+                <h3>Sign Up</h3>
+                <form action="" method="POST" novalidate>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Your Email *" value=""/>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" placeholder="Your Password *"
+                               value=""/>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" class="btnSubmit" value="Login"/>
+                    </div>
+                    <div class="form-group">
+
+                        <a href="#" class="btnForgetPwd" value="Login">Forget Password?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{#    <h1>Sign In</h1>#}
+{#    <form action="" method="POST" novalidate>#}
+{#        {{ form.hidden_tag() }}#}
+{#        <p>#}
+{#            {{ form.username.label }}<br/>#}
+{#            {{ form.username(size=32) }}#}
+{#            {% for error in form.username.errors %}#}
+{#                <span style="color: red;">{{ error }}</span>#}
+{#            {% endfor %}#}
+{#        </p>#}
+{#        <p>#}
+{#            {{ form.password.label }}<br/>#}
+{#            {{ form.password(size=32) }}#}
+{#            {% for error in form.password.errors %}#}
+{#                <span style="color: red;">{{ error }}</span>#}
+{#            {% endfor %}#}
+{#        </p>#}
+{#        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>#}
+{#        <p> {{ form.submit() }}</p>#}
+{#    </form>#}
+{#    <p>#}
+{#        Forgot Your Password?#}
+{#        <a href="{{ url_for('auth.reset_password_request') }}">Click to Reset It</a>#}
+{#    </p>#}
+{#    <p>New user? <a href="{{ url_for('auth.register') }}">Click to Register</a></p>#}
 {% endblock content %}
