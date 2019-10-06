@@ -33,13 +33,15 @@
         </div>
     </nav>
     <div class="container">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-info">{{ message }}</div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
+        <div id="flash">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-info">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
         {% block content %}{% endblock content %}
     </div>
 </body>
@@ -52,49 +54,12 @@
     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
     crossorigin="anonymous"></script>
 
-{{ moment.include_moment() }}
-<script>
-    $(function () {
-        var timer = null;
-        var xhr = null;
-        $(".user_popup").hover(
-            function (event) {
-                // mouse in handler
-                var element = $(event.currentTarget);
-                timer = setTimeout(function () {
-                    timer = null;
-                    xhr = $.ajax(
-                        `/user/${element.first().text().trim()}/popup`
-                    )
-                        .done(function (data) {
-                            xhr = null;
-                            element.popover({
-                                trigger: 'manual',
-                                html: true,
-                                animation: false,
-                                container: element,
-                                content: data,
-                            }).popover('show');
-                            flask_moment_render_all();
-                        })
-                }, 1000)
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
 
-            },
-            function (event) {
-                // mouseout handler
-                var element = $(event.currentTarget)
-                if (timer) {
-                    clearTimeout(timer);
-                    timer = null;
-                } else if (xhr) {
-                    xhr.abort();
-                    xhr = null;
-                } else {
-                    element.popover('dispose');
-                }
-            }
-        )
-    })
-</script>
+<script src="{{ url_for('static', filename='js/hover.js') }}"></script>
+<script src="{{ url_for('static', filename='js/follow_unfollow.js') }}"></script>
+
+{% block extra_script %}{% endblock %}
+{{ moment.include_moment() }}
 
 </html>

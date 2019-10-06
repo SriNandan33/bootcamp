@@ -10,11 +10,19 @@
                 {% if user.last_seen %}<p>Last seen on: {{ moment(user.last_seen).format('LLL') }}</p>{% endif %}
                 <p>{{ user.followers.count()}} followers, {{ user.followed.count()}} following.</p>
                 {% if user == current_user %}
-                <p><a href="{{ url_for('core.edit_profile')}}">Edit Profile</a></p>
+                    <p>
+                        <a href="{{ url_for('core.edit_profile')}}">
+                            Edit Profile
+                        </a>
+                    </p>
                 {% elif current_user.is_following(user) %}
-                <p><a href="{{ url_for('core.unfollow', username=user.username)}}">Unfollow</a></p>
+                    {% with user=user %}
+                        {% include 'snippets/unfollow_button.html' %}
+                    {% endwith %}
                 {% else %}
-                <p><a href="{{ url_for('core.follow', username=user.username)}}">Follow</a></p>
+                    {% with user=user %}
+                        {% include 'snippets/follow_button.html' %}
+                    {% endwith %}
                 {% endif %}
             </td>
         </tr>
