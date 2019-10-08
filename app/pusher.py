@@ -9,10 +9,10 @@ class Pusher(BasePusher):
 
     def init_app(self, app):
         super(Pusher, self).__init__(
-            app_id = app.config["pusher_app_id"],
-            key = app.config["pusher_key"],
-            secret = app.config["pusher_secret"],
-            cluster = app.config["pusher_cluster"],
+            app_id = app.config["PUSHER_APP_ID"],
+            key = app.config["PUSHER_KEY"],
+            secret = app.config["PUSHER_SECRET"],
+            cluster = app.config["PUSHER_CLUSTER"],
             ssl = True
         )
         if not hasattr(app, 'extensions'):

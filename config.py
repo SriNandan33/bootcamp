@@ -17,7 +17,7 @@ class Config:
     ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL')
 
     # pusher config
-    pusher_app_id = os.environ.get('PUSHER_APP_ID')
-    pusher_app_key = os.environ.get('PUSHER_KEY')
-    pusher_secret = os.environ.get('PUSHER_SECRET')
-    pusher_cluster = os.environ.get('PUSHER_CLUSTER')
+    PUSHER_APP_ID = os.environ.get('PUSHER_APP_ID')
+    PUSHER_KEY = os.environ.get('PUSHER_KEY')
+    PUSHER_SECRET = os.environ.get('PUSHER_SECRET')
+    PUSHER_CLUSTER = os.environ.get('PUSHER_CLUSTER')
