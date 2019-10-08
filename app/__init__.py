@@ -38,6 +38,9 @@ def create_app(config_class=Config):
     from app.core import bp as core_bp
     app.register_blueprint(core_bp)
 
+    from app.chat import bp as chat_bp
+    app.register_blueprint(chat_bp, url_prefix="/chat")
+
     return app
 
 from app import models

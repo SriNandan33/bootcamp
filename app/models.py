@@ -102,6 +102,23 @@ class Channel(db.Model):
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
+    @classmethod
+    def get_or_create(cls, sender_id, recipient_id):
+        channel = cls.query.filter( Channel.sender_id.in_([sender_id, recipient_id]))\
+                           .filter( Channel.recipient_id.in_([sender_id, recipient_id]))\
+                           .first()
+        if not channel:
+            name = f"private-chat_{sender_id}_{recipient_id}"
+
+            channel = Channel()
+            channel.sender_id = sender_id
+            channel.recipient_id = recipient_id
+            channel.name = name
+            db.session.add(channel)
+            db.session.commit()
+        
+        return channel
+
     def __repr__(self):
         return '<Channle {}>'.format(self.name)
 
