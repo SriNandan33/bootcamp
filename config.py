@@ -15,3 +15,9 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL')
+
+    # pusher config
+    pusher_app_id = os.environ.get('PUSHER_APP_ID')
+    pusher_app_key = os.environ.get('PUSHER_KEY')
+    pusher_secret = os.environ.get('PUSHER_SECRET')
+    pusher_cluster = os.environ.get('PUSHER_CLUSTER')
