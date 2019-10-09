@@ -11,7 +11,6 @@ def send_async_email(app, msg):
             print(e)
 
 def send_email(subject, sender, recipients, html_body):
-    print(sender, "\n", recipients)
     msg = Mail(
         from_email = sender,
         to_emails = recipients,
