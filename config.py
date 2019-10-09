@@ -15,3 +15,4 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL')
+    SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
