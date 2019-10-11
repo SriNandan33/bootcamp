@@ -49,3 +49,16 @@ def send_message():
     pusher.trigger(channel, 'new_message', data)
 
     return jsonify(data)
+
+@chat_bp.route('/get_message/<channel_id>', methods=["POST"])
+@login_required
+def get_messages(channel_id):
+    messages = Message.query.filter_by(channel_id=channel_id).all()
+
+    return jsonify([{
+       "id": message.id,
+       "message": message.body,
+       "sender_id": message.sender_id,
+       "recipient_id": message.recipient_id,
+       "channel_id": channel_id,
+    } for message in messages])
