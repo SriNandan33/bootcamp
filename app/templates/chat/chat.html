@@ -38,6 +38,12 @@
         
 
         $(function(){
+            $( "input#messagebox" ).keydown(function( event ) {
+                if ( event.which == 13 ) {
+                    sendMessage();
+                }
+            });
+
             (function requestChat(){
                 $.ajax({
                     url: "/chat/request_chat",
