@@ -70,13 +70,15 @@
                 data.forEach(function(messageObj){
                     $('#messages').append(`<p>${messageObj.message}</p>`)
                 })
+                scrollToBottom();
             })
         }
 
         function subscribeToPusher() {
             var channel = pusher.subscribe(senderChatChannel);
             channel.bind('new_message', function (data) {
-                $('#messages').append(`<p>${data.message}</p>`)
+                $('#messages').append(`<p>${data.message}</p>`);
+                scrollToBottom();
             });
         }
 
@@ -97,8 +99,13 @@
             }).done(function(data){
                 $('#messages').append(`<p>${data.message}</p>`)
                 $('input#messagebox').val("")
+                scrollToBottom();
             })
         }
+
+        function scrollToBottom() {
+            $('#messages').animate({scrollTop: $('#messages').prop('scrollHeight')});
+        };
 
     </script>
 {% endblock js_scripts %}
