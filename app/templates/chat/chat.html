@@ -1,12 +1,23 @@
 {% extends "base.html" %}
 
+{% block css %}
+<style>
+    .messages-container{
+        max-height: 100px;
+        overflow-y: auto;
+        width: 500px;
+        border: 1px solid blue;
+    }
+</style>
+{% endblock css %}
+
 {% block content %}
     <h1>Messages</h1>
     {% for user in current_user.followed %}
         <a href="{{ url_for('chat.chat', username=user.username) }}">{{ user.username }}</a><br>
     {% endfor %}
     {% if recipient is not none %}
-        <div id="messages"></div>
+        <div id="messages" class="messages-container"></div>
         <input type="text" id="messagebox"/>
         <button onclick="sendMessage()">Send</button>
     {% endif %}
@@ -14,12 +25,17 @@
 
 {% block js_scripts %}
     <script>
-        // let recipient = {{ 1 if recipient is not none else 0 }}
-        // console.log(recipient)
         let channelID = null;
         let channelName = null;
         let senderChatChannel = null;
         let recipientChatChannel = null;
+
+        var pusher = new Pusher('04587cc4f2fd0ca4213c', {
+                cluster: 'ap2',
+                forceTLS: true,
+                authEndpoint: "/chat/pusher/auth"
+            });
+        
 
         $(function(){
             (function requestChat(){
@@ -38,6 +54,7 @@
                     recipientChatChannel = data.recipient_chat_channel
 
                     getMessagesInChannle();
+                    subscribeToPusher();
                 })
             })();
     
@@ -50,16 +67,21 @@
                 dataType: 'json',
                 contentType: 'application/json',
             }).done(function(data){
-                console.log("got meesages", data, typeof data)
                 data.forEach(function(messageObj){
                     $('#messages').append(`<p>${messageObj.message}</p>`)
                 })
             })
         }
 
+        function subscribeToPusher() {
+            var channel = pusher.subscribe(senderChatChannel);
+            channel.bind('new_message', function (data) {
+                $('#messages').append(`<p>${data.message}</p>`)
+            });
+        }
+
         function sendMessage(event){
             let message = $('input#messagebox').val()
-            console.log(message, channelID)
             $.ajax({
                 url: '/chat/send_message',
                 method: 'POST',
@@ -70,6 +92,7 @@
                     message : message,
                     sender_id: {{ current_user.id }},
                     recipient_id : {{ recipient.id }},
+                    recipient_chat_channel: recipientChatChannel,
                 })
             }).done(function(data){
                 $('#messages').append(`<p>${data.message}</p>`)

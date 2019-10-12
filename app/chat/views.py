@@ -48,6 +48,7 @@ def send_message():
     recipient_id = data["recipient_id"]
     message = data["message"]
     channel = data["channel"]
+    recipient_chat_channel = data["recipient_chat_channel"]
     
     channelObj = Channel.query.get(channel)
     new_message = Message(body=message, channel_id=channel)
@@ -57,7 +58,7 @@ def send_message():
     db.session.commit()
 
     # send the message to other user
-    pusher.trigger(channelObj.name, 'new_message', data)
+    pusher.trigger(recipient_chat_channel, 'new_message', data)
 
     return jsonify(data)
 
@@ -73,3 +74,16 @@ def get_messages(channel_id):
        "recipient_id": message.recipient_id,
        "channel_id": channel_id,
     } for message in messages])
+
+@chat_bp.route("/pusher/auth", methods=['POST'])
+@login_required
+def pusher_authentication():
+    channel_name = request.form.get('channel_name')
+    socket_id = request.form.get('socket_id')
+
+    auth = pusher.authenticate(
+        channel=channel_name,
+        socket_id=socket_id
+    )
+
+    return jsonify(auth)
