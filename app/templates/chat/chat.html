@@ -24,20 +24,31 @@
 {% endblock content %}
 
 {% block js_scripts %}
+    {% if recipient %}
     <script>
         let channelID = null;
         let channelName = null;
+        let currentChatChannel = null;
         let senderChatChannel = null;
         let recipientChatChannel = null;
+        let senderID = {{ current_user.id }}
+        let recipientID = {{ recipient.id }}
 
-        var pusher = new Pusher('04587cc4f2fd0ca4213c', {
+        let pusher = new Pusher('04587cc4f2fd0ca4213c', {
                 cluster: 'ap2',
                 forceTLS: true,
                 authEndpoint: "/chat/pusher/auth"
             });
         
-
         $(function(){
+            const personalChannel = pusher.subscribe(`private-chat_user_${senderID}`)
+            personalChannel.bind("new_chat", function(data){
+                const isSubscribed = pusher.channel(data.channel_name)
+                if(!isSubscribed){
+                    let one_on_one_chat = subscribeChatChannel(data.channel_name)
+                }
+            })
+
             $( "input#messagebox" ).keydown(function( event ) {
                 if ( event.which == 13 ) {
                     sendMessage();
@@ -51,16 +62,20 @@
                     dataType: 'json',
                     contentType: 'application/json',
                     data: JSON.stringify({
-                        recipient_id: {{ recipient.id }}
+                        recipient_id: recipientID,
                     })
                 }).done(function(data){
                     channelID = data.channel_id
                     channelName = data.channel_name;
+                    currentChatChannel = data.channel_name;
                     senderChatChannel = data.sender_chat_channel;
                     recipientChatChannel = data.recipient_chat_channel
 
                     getMessagesInChannle();
-                    subscribeToPusher();
+                    const isSubscribed = pusher.channel(data.channel_name)
+                    if(!isSubscribed){
+                        let one_on_one_chat = subscribeChatChannel(data.channel_name)
+                    }
                 })
             })();
     
@@ -80,12 +95,16 @@
             })
         }
 
-        function subscribeToPusher() {
-            var channel = pusher.subscribe(senderChatChannel);
+
+        function subscribeChatChannel(channelName) {
+            var channel = pusher.subscribe(channelName);
             channel.bind('new_message', function (data) {
-                $('#messages').append(`<p>${data.message}</p>`);
-                scrollToBottom();
+                if(data.channel_name === currentChatChannel){
+                    $('#messages').append(`<p>${data.message}</p>`);
+                    scrollToBottom();
+                }
             });
+            return channel
         }
 
         function sendMessage(event){
@@ -100,10 +119,8 @@
                     message : message,
                     sender_id: {{ current_user.id }},
                     recipient_id : {{ recipient.id }},
-                    recipient_chat_channel: recipientChatChannel,
                 })
             }).done(function(data){
-                $('#messages').append(`<p>${data.message}</p>`)
                 $('input#messagebox').val("")
                 scrollToBottom();
             })
@@ -114,4 +131,5 @@
         };
 
     </script>
+    {% endif %}
 {% endblock js_scripts %}

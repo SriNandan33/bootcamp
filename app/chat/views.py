@@ -48,7 +48,6 @@ def send_message():
     recipient_id = data["recipient_id"]
     message = data["message"]
     channel = data["channel"]
-    recipient_chat_channel = data["recipient_chat_channel"]
     
     channelObj = Channel.query.get(channel)
     new_message = Message(body=message, channel_id=channel)
@@ -58,7 +57,8 @@ def send_message():
     db.session.commit()
 
     # send the message to other user
-    pusher.trigger(recipient_chat_channel, 'new_message', data)
+    data["channel_name"] = channelObj.name
+    pusher.trigger(channelObj.name, 'new_message', data)
 
     return jsonify(data)
 
