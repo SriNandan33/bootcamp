@@ -20,13 +20,22 @@
         </tr>
     </table>
     <hr>
-    {% for post in posts %}
-        {% include "_post.html" %}
+    <h4>Following</h4>
+    {% for following in user.followed %}
+
+    <table>
+        <tr>
+            <td><img src="{{ following.avatar(128) }}"></td>
+            <td>{{ following.username }}</td>
+            {% if current_user.is_following(following) %}
+            <td><a href="{{ url_for('core.unfollow', username=following.username)}}"><button>Unfollow</button> </a></td>
+            {% else %}
+            <td><a href="{{ url_for('core.follow', username=following.username)}}"><button>Follow</button></a></td>
+            {% endif %}
+        </tr>
+    </table>
+
     {% endfor %}
-    {% if prev_url %}
-    <a href="{{ prev_url}}">Newer Posts</a>
-    {% endif %}
-    {% if next_url %}
-    <a href="{{ next_url}}">Older Posts</a>
-    {% endif %}
+
+
 {% endblock %}

@@ -110,3 +110,14 @@ def unfollow(username):
     db.session.commit()
     flash(f"You unfollowed {username}")
     return redirect(url_for('core.user', username=username))
+
+@bp.route('/followers/<username>')
+def followers(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    return render_template('followers.html', user=user)
+
+
+@bp.route('/following/<username>')
+def following(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    return render_template('following.html', user=user)
