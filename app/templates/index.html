@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1> Hello {{ current_user.username }}</h1><hr />
+    <h1  style="margin-top: 9px; font-family: 'Acme', sans-serif;"> Hello, {{ current_user.username }}</h1><hr />
     <div>
         {% if form %}
         <form method="POST">

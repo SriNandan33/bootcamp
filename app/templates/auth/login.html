@@ -1,21 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Sign In</h1>
+<center>
+    <div style="border: 3px solid rgb(229, 230, 230); margin-top: 30px; margin-right: 20px; margin-left: 20px;">
+    <h1 style="margin-top: 9px; font-family: 'Acme', sans-serif;">Login</h1>
     <form action="" method="POST" novalidate>
         {{ form.hidden_tag() }}
         <p>
             {{ form.username.label}}<br />
-            {{ form.username(size=32)}}
+            {{ form.username(size=25)}}
             {% for error in form.username.errors %}
-                <span style="color: red;">{{ error }}</span>
+               <br /> <span style="color: red;">{{ error }}</span>
             {% endfor %}
         </p>
         <p>
             {{ form.password.label}}<br />
-            {{ form.password(size=32)}}
+            {{ form.password(size=25)}}
             {% for error in form.password.errors %}
-                <span style="color: red;">{{ error }}</span>
+               <br /> <span style="color: red;">{{ error }}</span>
             {% endfor %}
         </p>
         <p>{{ form.remember_me()}} {{ form.remember_me.label }}</p>
@@ -23,7 +25,8 @@
     </form>
     <p>
         Forgot Your Password?
-        <a href="{{ url_for('auth.reset_password_request') }}">Click to Reset It</a>
+        <a href="{{ url_for('auth.reset_password_request') }}" style="color: #1927f0">Click to Reset It</a>
     </p>
-    <p>New user? <a href="{{ url_for('auth.register')}}">Click to Register</a></p>
+    <p>New user? <a href="{{ url_for('auth.register')}}" style="color: #1927f0">Click to Register</a></p>
+    </div></center>
 {% endblock content %}
