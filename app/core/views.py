@@ -1,6 +1,6 @@
 from datetime import datetime
 from flask import render_template, flash, redirect, \
-    url_for, request, current_app
+    url_for, request, current_app, json, Response
 from flask_login import current_user, login_required
 from app import db
 from app.core import bp
@@ -87,26 +87,64 @@ def edit_profile():
 def follow(username):
     user = User.query.filter_by(username=username).first()
     if not user:
-        flash("User not found")
-        return redirect(url_for("core.index"))
+        response = Response(
+            response=json.dumps({
+                'error': 'User not found'
+            }),
+            status=400,
+            mimetype='application/json'
+        )
+        return response
     if user == current_user:
-        flash("You can't follow yourself")
-        return redirect(url_for('core.user', username=username))
+        response = Response(
+            response=json.dumps({
+                'error': "You can't follow yourself"
+            }),
+            status=400,
+            mimetype='application/json'
+        )
+        return response
     current_user.follow(user)
     db.session.commit()
-    flash(f"You are following {username}!")
-    return redirect(url_for("core.user", username=username))
+      response = Response(
+        response=json.dumps({
+            'error': ""
+        }),
+        status=200,
+        mimetype='application/json'
+    )
+
+    return response
 
 @bp.route('/unfollow/<username>')
 def unfollow(username):
     user = User.query.filter_by(username=username).first()
     if not user:
-        flash("User not found")
-        return redirect(url_for("core.index"))
+        response = Response(
+            response=json.dumps({
+                'error': 'User not found'
+            }),
+            status=400,
+            mimetype='application/json'
+        )
+        return response
     if user == current_user:
-        flash("You can unfollow yourself")
-        return redirect(url_for("core.user", username=username))
+        response = Response(
+            response=json.dumps({
+                'error': "You can't unfollow yourself"
+            }),
+            status=400,
+            mimetype='application/json'
+        )
+        return response
     current_user.unfollow(user)
     db.session.commit()
-    flash(f"You unfollowed {username}")
-    return redirect(url_for('core.user', username=username))
+    response = Response(
+        response=json.dumps({
+            'error': ""
+        }),
+        status=200,
+        mimetype='application/json'
+    )
+
+    return response
