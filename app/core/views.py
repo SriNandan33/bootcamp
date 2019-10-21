@@ -110,3 +110,8 @@ def unfollow(username):
     db.session.commit()
     flash(f"You unfollowed {username}")
     return redirect(url_for('core.user', username=username))
+
+@bp.route('/Userlist')
+@login_required
+def userList():
+       return render_template('user_list.html', users = User.query.all() )
