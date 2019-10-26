@@ -94,3 +94,41 @@ class Post(db.Model):
 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
+
+
+class Channel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(60))
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    @classmethod
+    def get_or_create(cls, sender_id, recipient_id):
+        channel = cls.query.filter( Channel.sender_id.in_([sender_id, recipient_id]))\
+                           .filter( Channel.recipient_id.in_([sender_id, recipient_id]))\
+                           .first()
+        if not channel:
+            name = f"private-chat_{sender_id}_{recipient_id}"
+
+            channel = Channel()
+            channel.sender_id = sender_id
+            channel.recipient_id = recipient_id
+            channel.name = name
+            db.session.add(channel)
+            db.session.commit()
+        
+        return channel
+
+    def __repr__(self):
+        return '<Channle {}>'.format(self.name)
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    channel_id = db.Column(db.Integer, db.ForeignKey('channel.id'))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+
+    def __repr__(self):
+        return '<Message {}-{}>'.format(self.sender_id, self.recipient_id)

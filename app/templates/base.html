@@ -21,6 +21,8 @@
                    cursor: pointer;
                 }
         </style>
+        {% block css %}
+        {% endblock css %}
 </head>
 
 <body>
@@ -40,12 +42,14 @@
                         href="{{ url_for('core.explore')}}" style="color: #fff; font-weight: 800; margin-top: 11px; font-size: 20px;">Explore</a></li>
                 <li class="nav-item {% if request.endpoint == 'user' %}active{% endif %}"><a class="nav-link"
                         href="{{ url_for('core.user', username=current_user.username)}}" style="color: #fff; font-weight: 800; margin-top: 11px; font-size: 20px;">Profile</a></li>
+                <li class="nav-item {% if request.endpoint == 'chat' %}active{% endif %}"><a class="nav-link"
+                    href="{{ url_for('chat.chat')}}" style="color: #fff; font-weight: 800; margin-top: 11px; font-size: 20px;">Messages</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout')}}" style="color: #fff; font-weight: 800; margin-top: 11px; font-size: 20px;">Logout</a></li>
                 {% endif %}
             </ul>
         </div>
     </nav>
-    <div class="container" style="max-width: 500px;">
+    <div class="container">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         {% for message in messages %}
@@ -64,6 +68,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
     crossorigin="anonymous"></script>
+<script src="https://js.pusher.com/5.0/pusher.min.js"></script>
 
 {{ moment.include_moment() }}
 <script>
@@ -109,5 +114,8 @@
         )
     })
 </script>
+
+{% block js_scripts %}
+{% endblock js_scripts %}
 
 </html>
