@@ -1,15 +1,15 @@
 # bootcamp
-A Minimal social networking application using Flask
+A Minimal social networking application using Flask Applicaion
 
 ## Setup
 
 1. **Clone this Repo**
 
     ``` 
-    git clone https://github.com/SriNandan33/bootcamp.git 
+    git clone https://github.com/devkushal23/bootcamp.git 
     ```
 
-2. **Install Python version 3.6 or greater**
+2. **Install Python version 3.6**
 
 	  https://www.python.org/downloads/
 		
@@ -20,13 +20,13 @@ A Minimal social networking application using Flask
 	source venv/bin/activate
     ```
 
-4. **Install requirements**
+4. **Install Requirements**
 
 	```
     pip install -r requirements.txt
     ```
 	
-5. **Create .flaskenv file and add required environment variables**
+5. **Create .flaskenv file and add required Environment Variables**
 	```
 	FLASK_APP=run.py
 	FLASK_DEBUG=true
@@ -42,9 +42,9 @@ A Minimal social networking application using Flask
 
 		Note: I am currently using google smtp service to send emails ( will be replaced soon). For testing purspose recipient might want to allow less secure apps to send emails to his account (https://myaccount.google.com/lesssecureapps).
 
-6. **Run the application**
+6. **Run the Application**
 
-    You should run commands below to create and apply migrations. 
+    You should run commands given below to create and apply migrations. 
     Database and tables will be created.
     
      ```
