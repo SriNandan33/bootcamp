@@ -6,7 +6,7 @@ A Minimal social networking application using Flask Applicaion
 1. **Clone this Repo**
 
     ``` 
-    git clone https://github.com/devkushal23/bootcamp.git 
+    git clone https://github.com/SriNandan33/bootcamp.git 
     ```
 
 2. **Install Python version 3.6**
