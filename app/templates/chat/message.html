@@ -1,9 +1,9 @@
 {% if message.sender_id == user_id %}
 <div style="text-align: right;">
-    <p>{{ message.body }}</p>
+    <p><span style="background: #4f9fff;" class="msg_container">{{ message.body }}</span></p>
 </div>
 {% else %}
 <div>
-    <p>{{ message.body }}</p>
+    <p><span style="background: #deefff; color: black;" class="msg_container">{{ message.body }}</span></p>
 </div>
 {% endif %}
