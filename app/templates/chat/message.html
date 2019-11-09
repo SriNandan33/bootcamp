@@ -1,9 +1,11 @@
 {% if message.sender_id == user_id %}
-<div style="text-align: right;">
-    <p><span style="background: #4f9fff;" class="msg_container">{{ message.body }}</span></p>
+<div class=" msg msg_right">
+    <p class="mr-0"><span style="background: #4f9fff;" class="msg_container">{{ message.body }}</span></p>
+    <img src="{{ message.sender.avatar(36)}}" class="msg-avatar">
 </div>
 {% else %}
-<div>
-    <p><span style="background: #deefff; color: black;" class="msg_container">{{ message.body }}</span></p>
+<div class="msg msg_left">
+    <img src="{{ message.sender.avatar(36)}}" class="msg-avatar">
+    <p class="mr-0"><span style="background: #deefff; color: black;" class="msg_container">{{ message.body }}</span></p>
 </div>
 {% endif %}
