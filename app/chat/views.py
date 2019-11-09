@@ -56,10 +56,17 @@ def send_message():
     db.session.add(new_message)
     db.session.commit()
 
-    # send the message to other user
     data["channel_name"] = channelObj.name
+    # message html is used in chat box
+    # It will have different styles for sender, recipient
+    # So We need to render for each user separatly
+    data["message"] = render_template("chat/message.html", message=new_message, user_id=recipient_id)
+    
+    # send the message to recipient via pusher
     pusher.trigger(channelObj.name, 'new_message', data)
-
+    
+    # send message back to sender via HTTP response
+    data["message"] = render_template("chat/message.html", message=new_message, user_id=sender_id)
     return jsonify(data)
 
 @chat_bp.route('/get_message/<channel_id>')
@@ -67,13 +74,7 @@ def send_message():
 def get_messages(channel_id):
     messages = Message.query.filter_by(channel_id=channel_id).all()
 
-    return jsonify([{
-       "id": message.id,
-       "message": message.body,
-       "sender_id": message.sender_id,
-       "recipient_id": message.recipient_id,
-       "channel_id": channel_id,
-    } for message in messages])
+    return jsonify([ render_template("chat/message.html", message=message, user_id=current_user.id) for message in messages])
 
 @chat_bp.route("/pusher/auth", methods=['POST'])
 @login_required

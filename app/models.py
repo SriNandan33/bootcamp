@@ -125,10 +125,13 @@ class Channel(db.Model):
 class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     body = db.Column(db.Text)
-    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     channel_id = db.Column(db.Integer, db.ForeignKey('channel.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    sender = db.relationship('User', foreign_keys="Message.sender_id")
+    recipient = db.relationship('User', foreign_keys="Message.recipient_id")
+
 
     def __repr__(self):
         return '<Message {}-{}>'.format(self.sender_id, self.recipient_id)

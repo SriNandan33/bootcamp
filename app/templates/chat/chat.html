@@ -120,6 +120,7 @@
         let senderChatChannel = null;
         let recipientChatChannel = null;
         let senderID = {{ current_user.id }}
+        let currentUserID = senderID
         let recipientID = {{ recipient.id }}
 
         let pusher = new Pusher('04587cc4f2fd0ca4213c', {
@@ -176,8 +177,8 @@
                 dataType: 'json',
                 contentType: 'application/json',
             }).done(function(data){
-                data.forEach(function(messageObj){
-                    $('#messages').append(`<p>${messageObj.message}</p>`)
+                data.forEach(function(message){
+                    $('#messages').append(message)
                 })
                 scrollToBottom();
             })
@@ -187,8 +188,8 @@
         function subscribeChatChannel(channelName) {
             var channel = pusher.subscribe(channelName);
             channel.bind('new_message', function (data) {
-                if(data.channel_name === currentChatChannel){
-                    $('#messages').append(`<p>${data.message}</p>`);
+                if(data.channel_name === currentChatChannel && currentUserID === data.recipient_id){
+                    $('#messages').append(data.message);
                     scrollToBottom();
                 }
             });
@@ -210,6 +211,7 @@
                 })
             }).done(function(data){
                 $('input#messagebox').val("")
+                $('#messages').append(data.message);
                 scrollToBottom();
             })
         }
