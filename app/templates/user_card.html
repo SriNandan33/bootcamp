@@ -1,0 +1,72 @@
+{%  block css %}
+    <style>
+        .card-container{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid lightgray;
+            border-radius: 5px;
+            box-shadow: 2px 2px 10px lightgray;
+            margin-bottom: 20px;
+            padding: 15px 0;
+        }
+        .card-profile-pic{
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+        }
+        .user-profile-stats{
+            display: flex;
+        }
+        .user-profile-bio, .user-profile-link{
+            color: #657786;
+            text-decoration: none;
+        }
+        .user-profile-bio{
+            font-size: 12px;
+            color: #333;
+        }
+        .user-profile-link:hover{
+            text-decoration: underline;
+        }
+        .py-10{
+            padding: 10px 0;
+        }
+        .user-profile-stats__item{
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5px;
+            color: #5271ff;
+            font-weight: bold;
+        }
+        .user-profile-stats__count{
+            color: #657786;
+        }
+    </style>
+{% endblock css %}
+<div class="card-container">
+    <div class="py-10">
+        <img src="{{ current_user.avatar(128)}}" class="card-profile-pic">
+    </div>
+    <div style="text-align: center;">
+        <a href="{{url_for('core.user', username=current_user.username)}}" class="user-profile-link">@{{ current_user.username}}</a>
+        <p class="user-profile-bio">{{ current_user.about_me }}</p>
+    </div>
+    <div class="user-profile-stats">
+        <div class="user-profile-stats__item">
+            <div>Posts</div>
+            <div class="user-profile-stats__count">{{ current_user.posts.count()}}</div>
+        </div>
+        <div class="user-profile-stats__item">
+            <div>Followers</div>
+            <div class="user-profile-stats__count">{{ current_user.followers.count()}}</div>
+        </div>
+        <div class="user-profile-stats__item">
+            <div>Following</div>
+            <div class="user-profile-stats__count">{{ current_user.followed.count()}}</div>
+        </div>
+    </div>
+</div>
