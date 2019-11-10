@@ -1,4 +1,11 @@
 {% extends "base.html" %}
+{% block css %}
+    <style>
+        .post-form{
+            width: 70%;
+        }
+    </style>
+{% endblock css %}
 
 {% block content %}
     <div style="padding: 30px 0">
@@ -9,18 +16,17 @@
                 </div>
             </div>
             <div class="col-md-8">
-                <div>
+                <div class="post-form">
                     {% if form %}
                     <form method="POST">
                         {{ form.hidden_tag() }}
-                        <p>
-                            {{ form.post.label }}<br>
-                            {{ form.post(cols=32, rows=4) }}<br>
+                        <p style="margin-bottom: 0;">
+                            {{ form.post(cols=32, rows=4, class="form-control", placeholder="Say something...") }}<br>
                             {% for error in form.post.errors %}
                             <span style="color:red;">{{ error }}</span>
                             {% endfor %}
                         </p>
-                        <p>{{ form.submit() }}</p>
+                        <div style="display: flex; justify-content: flex-end;">{{ form.submit(class="btn") }}</div>
                     </form>
                     {% endif %}
                 </div>
