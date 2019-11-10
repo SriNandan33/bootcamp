@@ -1,13 +1,16 @@
-<table>
-    <tr valign="top">
-        <td><img src="{{ post.author.avatar(36) }}"></td>
-        <td></td>
-        <td>
+<div class="post-container">
+    <div class="post-avatar">
+        <img src="{{ post.author.avatar(36)}}">
+    </div>
+    <div class="post-content">
+        <div class="post-content-header">
             <span class="user_popup">
                 <a href="{{ url_for('core.user', username=post.author.username)}}"><b>{{ post.author.username }}</b></a>
             </span>
-            <span>{{ moment(post.timestamp).fromNow() }}</span>
-            <br>{{ post.body }}
-        </td>
-    </tr>
-</table>
+            <span class="post-timestamp">{{ moment(post.timestamp).fromNow() }}</span>
+        </div>
+        <div class="post-content-body">
+            <p>{{ post.body }}</p>
+        </div>
+    </div>
+</div>

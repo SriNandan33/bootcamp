@@ -1,30 +1,38 @@
 {% extends "base.html" %}
-
 {% block content %}
-    <h1  style="margin-top: 9px; font-family: 'Acme', sans-serif;"> Hello, {{ current_user.username }}</h1><hr />
-    <div>
-        {% if form %}
-        <form method="POST">
-            {{ form.hidden_tag() }}
-            <p>
-                {{ form.post.label }}<br>
-                {{ form.post(cols=32, rows=4) }}<br>
-                {% for error in form.post.errors %}
-                <span style="color:red;">{{ error }}</span>
+    <div style="padding: 30px 0">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="profile-card__parent">
+                    {% include "user_card.html" %}
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="post-form">
+                    {% if form %}
+                    <form method="POST">
+                        {{ form.hidden_tag() }}
+                        <p style="margin-bottom: 0;">
+                            {{ form.post(cols=32, rows=4, class="form-control", placeholder="Say something...") }}<br>
+                            {% for error in form.post.errors %}
+                            <span style="color:red;">{{ error }}</span>
+                            {% endfor %}
+                        </p>
+                        <div style="display: flex; justify-content: flex-end;">{{ form.submit(class="btn") }}</div>
+                    </form>
+                    {% endif %}
+                </div>
+                {% for post in posts %}
+                    {% include "_post.html" %}
                 {% endfor %}
-            </p>
-            <p>{{ form.submit() }}</p>
-        </form>
-        {% endif %}
+                {% if prev_url %}
+                <a href="{{ prev_url}}">Newer Posts</a>
+                {% endif %}
+                {% if next_url %}
+                <a href="{{ next_url}}">Older Posts</a>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    {% for post in posts %}
-        {% include "_post.html" %}
-    {% endfor %}
-    {% if prev_url %}
-    <a href="{{ prev_url}}">Newer Posts</a>
-    {% endif %}
-    {% if next_url %}
-    <a href="{{ next_url}}">Older Posts</a>
-    {% endif %}
 {% endblock content %}
   
