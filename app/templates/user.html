@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <table>
+    <table xmlns="http://www.w3.org/1999/html">
         <tr valign="top">
             <td><img src="{{ user.avatar(128) }}" style="margin-top: 20px;"></td>
             <td>
@@ -12,9 +12,9 @@
                 {% if user == current_user %}
                 <p><a href="{{ url_for('core.edit_profile')}}">Edit Profile</a></p>
                 {% elif current_user.is_following(user) %}
-                <p><a href="{{ url_for('core.unfollow', username=user.username)}}">Unfollow</a></p>
+                <p id="btn-holder"><button type="button" id="unfollow" class="btn btn-info" onclick="stopFollowing()">Unfollow</button></p>
                 {% else %}
-                <p><a href="{{ url_for('core.follow', username=user.username)}}">Follow</a></p>
+                <p id="btn-holder"><button type="button" id="follow" class="btn btn-info" onclick="startFollowing()">Follow</button></p>
                 {% endif %}
             </td>
         </tr>
@@ -29,4 +29,44 @@
     {% if next_url %}
     <a href="{{ next_url}}">Older Posts</a>
     {% endif %}
+
+    <script>
+    function startFollowing() {
+        $.ajax({
+            url: '{{ url_for('core.follow', username=user.username)}}',
+            statusCode: {
+                200: function(data) {
+                    let btn = document.getElementById('follow');
+                    btn.onclick = stopFollowing;
+                    btn.id = 'unfollow';
+                    btn.innerText = 'Unfollow';
+                    console.log('gotem');
+                },
+                502: function (data) {
+                    let btnHolder = document.getElementById('btn-holder');
+                    btnHolder.appendChild(document.createTextNode(data['error']));
+                }
+            }
+        })
+    }
+
+    function stopFollowing() {
+        $.ajax({
+            url: '{{ url_for('core.unfollow', username=user.username)}}',
+            statusCode: {
+                200: function(data) {
+                    let btn = document.getElementById('unfollow');
+                    btn.onclick = startFollowing;
+                    btn.id = 'follow';
+                    btn.innerText = 'Follow';
+                    console.log('gotem');
+                },
+                502: function (data) {
+                    let btnHolder = document.getElementById('btn-holder');
+                    btnHolder.appendChild(document.createTextNode(data['error']));
+                }
+            }
+        })
+    }
+    </script>
 {% endblock %}
