@@ -14,6 +14,11 @@ followers = db.Table('followers',
     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
 )
 
+likes = db.Table('likes',
+    db.Column('post_id', db.Integer, db.ForeignKey('post.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
+)
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -90,6 +95,11 @@ class Post(db.Model):
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id')
+    )
+    likes = db.relationship('User',
+        secondary=likes,
+        backref=db.backref('liked', lazy='dynamic'),
+        lazy='dynamic'
     )
 
     def __repr__(self):
