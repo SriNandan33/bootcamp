@@ -72,6 +72,12 @@
                     font-size: 12px;
                     color: #657786;
                 }
+                .post-like:hover{
+                    text-decoration: none;
+                }
+                .like-count{
+                    color: #333;
+                }
         </style>
         {% block css %}
         {% endblock css %}
@@ -181,6 +187,7 @@
                     }else if(res.liked === true){
                         postElement.children('img').attr('src', like)
                     }
+                    postElement.children('span').text(res.like_count)
                 },
             })
         })

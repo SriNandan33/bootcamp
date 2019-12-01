@@ -118,4 +118,4 @@ def like(post_id):
         return {"error": "post not found"}
     liked = post.like(current_user)
     db.session.commit()
-    return {"liked": liked, "post_id": post_id}
+    return {"liked": liked, "post_id": post_id, "like_count": post.likes.count()}

@@ -14,13 +14,15 @@
             <div class="post-footer">
                 {% if post.liked(current_user) %}
                     <a href="{{ url_for('core.like', post_id=post.id)}}" class="post-like" data-id="{{ post.id }}">
-                        <img src="{{ url_for('static', filename='img/like.png')}}" width="25px" height="25px"/>
+                        <img src="{{ url_for('static', filename='img/like.png')}}" width="20px" height="20px"/>
+                        <span class="like-count" style="text-decoration: none;">{{ post.likes.count() }}</span>
                     </a>
-                {% else %}
-                <a href="{{ url_for('core.like', post_id=post.id)}}" class="post-like" data-id="{{ post.id }}">
-                    <img src="{{ url_for('static', filename='img/like-border.png')}}" width="25px" height="25px"/>
-                </a>
-                {% endif %}
+                    {% else %}
+                    <a href="{{ url_for('core.like', post_id=post.id)}}" class="post-like" data-id="{{ post.id }}">
+                        <img src="{{ url_for('static', filename='img/like-border.png')}}" width="20px" height="20px"/>
+                        <span class="like-count" style="text-decoration: none;">{{ post.likes.count() }}</span>
+                    </a>
+                    {% endif %}
             </div>
         </div>
     </div>
