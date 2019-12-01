@@ -170,14 +170,16 @@
             const postElement = $(this)
             const postID = postElement.attr('data-id')
             const url = postElement.attr('href')
+            const likeBorder = '{{ url_for('static', filename='img/like-border.png') }}'
+            const like = '{{ url_for('static', filename='img/like.png') }}'
             $.ajax({
                 method: "GET",
                 url: url,
                 success: function(res){
                     if(res.liked === false){
-                        postElement.text('like')
+                       postElement.children('img').attr('src', likeBorder)
                     }else if(res.liked === true){
-                        postElement.text('unlike')
+                        postElement.children('img').attr('src', like)
                     }
                 },
             })
