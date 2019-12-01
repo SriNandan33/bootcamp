@@ -110,3 +110,12 @@ def unfollow(username):
     db.session.commit()
     flash(f"You unfollowed {username}")
     return redirect(url_for('core.user', username=username))
+
+@bp.route('/post/<post_id>/like')
+def like(post_id):
+    post = Post.query.filter_by(id=post_id).first()
+    if not post:
+        return {"error": "post not found"}
+    liked = post.like(current_user)
+    db.session.commit()
+    return {"liked": liked, "post_id": post_id, "like_count": post.likes.count()}

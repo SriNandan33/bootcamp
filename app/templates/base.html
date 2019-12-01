@@ -72,6 +72,12 @@
                     font-size: 12px;
                     color: #657786;
                 }
+                .post-like:hover{
+                    text-decoration: none;
+                }
+                .like-count{
+                    color: #333;
+                }
         </style>
         {% block css %}
         {% endblock css %}
@@ -164,6 +170,27 @@
                 }
             }
         )
+
+        $(".post-like").click(function(event){
+            event.preventDefault()
+            const postElement = $(this)
+            const postID = postElement.attr('data-id')
+            const url = postElement.attr('href')
+            const likeBorder = '{{ url_for('static', filename='img/like-border.png') }}'
+            const like = '{{ url_for('static', filename='img/like.png') }}'
+            $.ajax({
+                method: "GET",
+                url: url,
+                success: function(res){
+                    if(res.liked === false){
+                       postElement.children('img').attr('src', likeBorder)
+                    }else if(res.liked === true){
+                        postElement.children('img').attr('src', like)
+                    }
+                    postElement.children('span').text(res.like_count)
+                },
+            })
+        })
     })
 </script>
 
