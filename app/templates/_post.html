@@ -11,6 +11,13 @@
         </div>
         <div class="post-content-body">
             <p>{{ post.body }}</p>
+            <div class="post-footer">
+                {% if post.liked(current_user) %}
+                    <a href="{{ url_for('core.like', post_id=post.id)}}" class="post-like" data-id="{{ post.id }}">unlike</a>
+                {% else %}
+                <a href="{{ url_for('core.like', post_id=post.id)}}" class="post-like" data-id="{{ post.id }}">like</a>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>

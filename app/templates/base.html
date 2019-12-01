@@ -164,6 +164,24 @@
                 }
             }
         )
+
+        $(".post-like").click(function(event){
+            event.preventDefault()
+            const postElement = $(this)
+            const postID = postElement.attr('data-id')
+            const url = postElement.attr('href')
+            $.ajax({
+                method: "GET",
+                url: url,
+                success: function(res){
+                    if(res.liked === false){
+                        postElement.text('like')
+                    }else if(res.liked === true){
+                        postElement.text('unlike')
+                    }
+                },
+            })
+        })
     })
 </script>
 

@@ -102,6 +102,16 @@ class Post(db.Model):
         lazy='dynamic'
     )
 
+    def like(self, user):
+        if self.liked(user):
+            self.likes.remove(user) # unlike
+            return False
+        self.likes.append(user) # like
+        return True
+
+    def liked(self, user):
+        return user in self.likes
+
     def __repr__(self):
         return '<Post {}>'.format(self.body)
 
