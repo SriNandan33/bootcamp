@@ -1,13 +1,29 @@
-<table>
-    <tr valign="top">
-        <td><img src="{{ post.author.avatar(36) }}"></td>
-        <td></td>
-        <td>
+<div class="post-container">
+    <div class="post-avatar">
+        <img src="{{ post.author.avatar(36)}}">
+    </div>
+    <div class="post-content">
+        <div class="post-content-header">
             <span class="user_popup">
                 <a href="{{ url_for('core.user', username=post.author.username)}}"><b>{{ post.author.username }}</b></a>
             </span>
-            <span>{{ moment(post.timestamp).fromNow() }}</span>
-            <br>{{ post.body }}
-        </td>
-    </tr>
-</table>
+            <span class="post-timestamp">{{ moment(post.timestamp).fromNow() }}</span>
+        </div>
+        <div class="post-content-body">
+            <p>{{ post.body }}</p>
+            <div class="post-footer">
+                {% if post.liked(current_user) %}
+                    <a href="{{ url_for('core.like', post_id=post.id)}}" class="post-like" data-id="{{ post.id }}">
+                        <img src="{{ url_for('static', filename='img/like.png')}}" width="20px" height="20px"/>
+                        <span class="like-count" style="text-decoration: none;">{{ post.likes.count() }}</span>
+                    </a>
+                    {% else %}
+                    <a href="{{ url_for('core.like', post_id=post.id)}}" class="post-like" data-id="{{ post.id }}">
+                        <img src="{{ url_for('static', filename='img/like-border.png')}}" width="20px" height="20px"/>
+                        <span class="like-count" style="text-decoration: none;">{{ post.likes.count() }}</span>
+                    </a>
+                    {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

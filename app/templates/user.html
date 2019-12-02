@@ -1,32 +1,59 @@
 {% extends "base.html" %}
+{% block css %}
+    <style>
+        .user-profile-card{
+            display: flex;
+            padding: 15px;
+            border-bottom: 1px solid lightgray;
+            margin-bottom: 10px;
+        }
+        .user-profile-avatar{
+            display: flex;
+            align-items: center;
+        }
+        .user-profile-avatar img{
+            height: 220px;
+            width: 220px;
+            border-radius: 50%;
+        }
+        .user-profile-content{
+            padding: 15px;
+        }
+    </style>
+{% endblock css %}
 
 {% block content %}
-    <table>
-        <tr valign="top">
-            <td><img src="{{ user.avatar(128) }}"></td>
-            <td>
-                <h1>User: {{ user.username }}</h1>
-                {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
-                {% if user.last_seen %}<p>Last seen on: {{ moment(user.last_seen).format('LLL') }}</p>{% endif %}
-                <p>{{ user.followers.count()}} followers, {{ user.followed.count()}} following.</p>
-                {% if user == current_user %}
-                <p><a href="{{ url_for('core.edit_profile')}}">Edit Profile</a></p>
-                {% elif current_user.is_following(user) %}
-                <p><a href="{{ url_for('core.unfollow', username=user.username)}}">Unfollow</a></p>
-                {% else %}
-                <p><a href="{{ url_for('core.follow', username=user.username)}}">Follow</a></p>
-                {% endif %}
-            </td>
-        </tr>
-    </table>
-    <hr>
-    {% for post in posts %}
-        {% include "_post.html" %}
-    {% endfor %}
-    {% if prev_url %}
-    <a href="{{ prev_url}}">Newer Posts</a>
-    {% endif %}
-    {% if next_url %}
-    <a href="{{ next_url}}">Older Posts</a>
-    {% endif %}
+    <div class="container d-flex flex-column align-items-center">
+        <div class="col-md-8">
+            <div class="user-profile-card">
+                <div class="user-profile-avatar">
+                    <img src="{{ user.avatar(300) }}" style="margin-top: 20px;">
+                </div>
+                <div class="user-profile-content">
+                    <h1 style="margin-top: 7px; font-family: 'Acme', sans-serif;">{{ user.username }}</h1>
+                    {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
+                    {% if user.last_seen %}<p>Last seen on: {{ moment(user.last_seen).format('LLL') }}</p>{% endif %}
+                    <p>{{ user.followers.count()}} followers, {{ user.followed.count()}} following.</p>
+                    {% if user == current_user %}
+                    <p><a href="{{ url_for('core.edit_profile')}}">Edit Profile</a></p>
+                    {% elif current_user.is_following(user) %}
+                    <p><a href="{{ url_for('core.unfollow', username=user.username)}}">Unfollow</a></p>
+                    {% else %}
+                    <p><a href="{{ url_for('core.follow', username=user.username)}}">Follow</a></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            {% for post in posts %}
+                {% include "_post.html" %}
+            {% endfor %}
+            {% if prev_url %}
+            <a href="{{ prev_url}}">Newer Posts</a>
+            {% endif %}
+            {% if next_url %}
+            <a href="{{ next_url}}">Older Posts</a>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+
+{% block css %}
+<style>
+    .chat-users{
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+    }
+    .chat-users .chat-users__item{
+        border-radius: 10px;
+        margin-bottom: 5px;
+        padding: 10px 5px;
+        display: inline-block;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+    .chat-user-active{
+        border: 1px solid #5271ff;
+        box-shadow: 2px 2px #5271ff;
+    }
+    .chat-user__image{
+        height: 30px;
+        width: 30px;
+        border-radius: 50%;
+    }
+    .messages-container, .messages-container-dummy{
+        height: 400px;
+        overflow-y: auto;
+        width: 100%;
+        padding: 20px;
+        border: 1px solid lightgray;
+        margin-bottom: 10px;
+    }
+    .messages-container-dummy{
+        background: #f9f9f9;
+        font-size: 20px;
+    }
+    button.send-button{
+        display: inline-block;
+        background: #5271ff;
+        color: #fff;
+        border: none;
+        height: 40px;
+        margin: 0;
+        padding: 10px 20px;
+        -moz-border-radius: 2px;
+        cursor: pointer;
+    }
+    .border-red{
+        border: 1px solid red;
+    }
+    .min-height-500{
+        min-height: 500px;
+    }
+    .message-area{
+        display: flex;
+    }
+    #messagebox{
+        flex: 1;
+        height: 40px;
+        border: 1px solid lightgray;
+        margin: 0;
+        outline: none;
+        padding-left: 15px;
+    }
+    .messages-container::-webkit-scrollbar {
+        width: 7px;
+    }
+    
+    .messages-container::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    }
+    
+    .messages-container::-webkit-scrollbar-thumb {
+        background-color: #5271ff;
+        outline: 1px solid #5271ff;
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+    <div class="container">
+        <h1>Messages</h1>
+        <div class="row">
+            <div class="col-md-2 chat-users min-height-500">
+                {% for user in current_user.followed %}
+                    <div class="chat-users__item {{ 'chat-user-active' if recipient is not none and recipient == user }}">
+                        <img src="{{ user.avatar(40) }}" class="chat-user__image" />
+                        <a href="{{ url_for('chat.chat', username=user.username) }}">{{ user.username }}</a><br>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if recipient is not none %}
+            <div class="col-md-10 min-height-500">
+                <div id="messages" class="messages-container"></div>
+                <div class="message-area">
+                    <input type="text" id="messagebox" placeholder=" message {{ recipient.username }}"/>
+                    <button onclick="sendMessage()" class="send-button">Send</button>
+                </div>
+            </div>
+            {% else %}
+                <div class="col-md-10 min-height-500">
+                    <div class="messages-container-dummy">
+                        <p>Click on any of your connections to start conversation....</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}
+
+{% block js_scripts %}
+    {% if recipient %}
+    <script>
+        let channelID = null;
+        let channelName = null;
+        let currentChatChannel = null;
+        let senderChatChannel = null;
+        let recipientChatChannel = null;
+        let senderID = {{ current_user.id }}
+        let currentUserID = senderID
+        let recipientID = {{ recipient.id }}
+
+        let pusher = new Pusher('04587cc4f2fd0ca4213c', {
+                cluster: 'ap2',
+                forceTLS: true,
+                authEndpoint: "/chat/pusher/auth"
+            });
+        
+        $(function(){
+            const personalChannel = pusher.subscribe(`private-chat_user_${senderID}`)
+            personalChannel.bind("new_chat", function(data){
+                const isSubscribed = pusher.channel(data.channel_name)
+                if(!isSubscribed){
+                    let one_on_one_chat = subscribeChatChannel(data.channel_name)
+                }
+            })
+
+            $( "input#messagebox" ).keydown(function( event ) {
+                if ( event.which == 13 ) {
+                    sendMessage();
+                }
+            });
+
+            (function requestChat(){
+                $.ajax({
+                    url: "/chat/request_chat",
+                    method: "POST",
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        recipient_id: recipientID,
+                    })
+                }).done(function(data){
+                    channelID = data.channel_id
+                    channelName = data.channel_name;
+                    currentChatChannel = data.channel_name;
+                    senderChatChannel = data.sender_chat_channel;
+                    recipientChatChannel = data.recipient_chat_channel
+
+                    getMessagesInChannle();
+                    const isSubscribed = pusher.channel(data.channel_name)
+                    if(!isSubscribed){
+                        let one_on_one_chat = subscribeChatChannel(data.channel_name)
+                    }
+                })
+            })();
+    
+        })
+
+        function getMessagesInChannle(){
+            $.ajax({
+                url: `/chat/get_message/${channelID}`,
+                method: 'GET',
+                dataType: 'json',
+                contentType: 'application/json',
+            }).done(function(data){
+                data.forEach(function(message){
+                    $('#messages').append(message)
+                })
+                scrollToBottom();
+            })
+        }
+
+
+        function subscribeChatChannel(channelName) {
+            var channel = pusher.subscribe(channelName);
+            channel.bind('new_message', function (data) {
+                if(data.channel_name === currentChatChannel && currentUserID === data.recipient_id){
+                    $('#messages').append(data.message);
+                    scrollToBottom();
+                }
+            });
+            return channel
+        }
+
+        function sendMessage(event){
+            let message = $('input#messagebox').val()
+            $.ajax({
+                url: '/chat/send_message',
+                method: 'POST',
+                dataType: 'json',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    channel : channelID,
+                    message : message,
+                    sender_id: {{ current_user.id }},
+                    recipient_id : {{ recipient.id }},
+                })
+            }).done(function(data){
+                $('input#messagebox').val("")
+                $('#messages').append(data.message);
+                scrollToBottom();
+            })
+        }
+
+        function scrollToBottom() {
+            $('#messages').animate({scrollTop: $('#messages').prop('scrollHeight')});
+        };
+
+    </script>
+    {% endif %}
+{% endblock js_scripts %}

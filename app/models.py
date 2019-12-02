@@ -14,6 +14,11 @@ followers = db.Table('followers',
     db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
 )
 
+likes = db.Table('likes',
+    db.Column('post_id', db.Integer, db.ForeignKey('post.id')),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
+)
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -91,6 +96,62 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id')
     )
+    likes = db.relationship('User',
+        secondary=likes,
+        backref=db.backref('liked', lazy='dynamic'),
+        lazy='dynamic'
+    )
+
+    def like(self, user):
+        if self.liked(user):
+            self.likes.remove(user) # unlike
+            return False
+        self.likes.append(user) # like
+        return True
+
+    def liked(self, user):
+        return user in self.likes
 
     def __repr__(self):
         return '<Post {}>'.format(self.body)
+
+
+class Channel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(60))
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    @classmethod
+    def get_or_create(cls, sender_id, recipient_id):
+        channel = cls.query.filter( Channel.sender_id.in_([sender_id, recipient_id]))\
+                           .filter( Channel.recipient_id.in_([sender_id, recipient_id]))\
+                           .first()
+        if not channel:
+            name = f"private-chat_{sender_id}_{recipient_id}"
+
+            channel = Channel()
+            channel.sender_id = sender_id
+            channel.recipient_id = recipient_id
+            channel.name = name
+            db.session.add(channel)
+            db.session.commit()
+        
+        return channel
+
+    def __repr__(self):
+        return '<Channle {}>'.format(self.name)
+
+class Message(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    body = db.Column(db.Text)
+    channel_id = db.Column(db.Integer, db.ForeignKey('channel.id'))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    sender = db.relationship('User', foreign_keys="Message.sender_id")
+    recipient = db.relationship('User', foreign_keys="Message.recipient_id")
+
+
+    def __repr__(self):
+        return '<Message {}-{}>'.format(self.sender_id, self.recipient_id)

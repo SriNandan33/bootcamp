@@ -8,11 +8,84 @@
     {% endif %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet"> 
+        <style type="text/css">
+            input[type="submit"]{
+                   display: block;
+                   background: #5271ff;
+                   color: #fff;
+                   border: none;
+                   padding: 10px 40px;
+                   -moz-border-radius: 2px;
+                   border-radius: 30px;
+                   cursor: pointer;
+                }
+                .msg_container {
+                    color: white;
+                    margin-top: auto;
+                    margin-bottom: auto;
+                    border-radius: 25px;
+                    background-color: #82ccdd;
+                    padding: 10px;
+                    position: relative;
+                }
+                .msg{
+                    display: flex;
+                    margin-bottom: 10px;
+                    align-items: center;
+                }
+                .msg_right {
+                    justify-content: flex-end; 
+                }
+                .msg_left {
+                    justify-content: flex-start;
+                }
+                .mr-0{
+                    margin: 0;
+                }
+                .msg-avatar{
+                    margin: 0 5px;
+                    border-radius: 50%;
+                }
+                .post-container{
+                    display: flex;
+                    min-height: 100px;
+                    border: 1px solid #e6ecf0;
+                    background-color: #fff;
+                }
+                .post-avatar{
+                    text-align: center;
+                }
+                .post-avatar img{
+                    padding: 10px 5px;
+                    border-radius: 50%;
+                }
+                .post-content{
+                    display: flex;
+                    flex-direction: column;
+                    padding: 10px 0px;
+                }
+                .user_popup a{
+                    color: #5577fb;
+                }
+                .post-timestamp{
+                    font-size: 12px;
+                    color: #657786;
+                }
+                .post-like:hover{
+                    text-decoration: none;
+                }
+                .like-count{
+                    color: #333;
+                }
+        </style>
+        {% block css %}
+        {% endblock css %}
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{{ url_for('core.index')}}">Bootcamp</a>
+    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #5271ff">
+        <a class="navbar-brand" href="{{ url_for('core.index')}}" style="color: #fff; margin-top: -6px; margin-left: 30px;"><img src="../static/img/br.png" style="max-height: 60px; " /></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -21,13 +94,15 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 {% if current_user.is_anonymous %}
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login')}}">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login')}}" style="color: #fff; font-weight: 800; margin-top: 11px; font-size: 20px;">Login</a></li>
                 {% else %}
                 <li class="nav-item {% if request.endpoint == 'explore' %}active{% endif %}"><a class="nav-link"
-                        href="{{ url_for('core.explore')}}">Explore</a></li>
+                        href="{{ url_for('core.explore')}}" style="color: #fff; font-weight: 800; margin-top: 11px; font-size: 20px;">Explore</a></li>
                 <li class="nav-item {% if request.endpoint == 'user' %}active{% endif %}"><a class="nav-link"
-                        href="{{ url_for('core.user', username=current_user.username)}}">Profile</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout')}}">Logout</a></li>
+                        href="{{ url_for('core.user', username=current_user.username)}}" style="color: #fff; font-weight: 800; margin-top: 11px; font-size: 20px;">Profile</a></li>
+                <li class="nav-item {% if request.endpoint == 'chat' %}active{% endif %}"><a class="nav-link"
+                    href="{{ url_for('chat.chat')}}" style="color: #fff; font-weight: 800; margin-top: 11px; font-size: 20px;">Messages</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.logout')}}" style="color: #fff; font-weight: 800; margin-top: 11px; font-size: 20px;">Logout</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -51,6 +126,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
     crossorigin="anonymous"></script>
+<script src="https://js.pusher.com/5.0/pusher.min.js"></script>
 
 {{ moment.include_moment() }}
 <script>
@@ -94,7 +170,31 @@
                 }
             }
         )
+
+        $(".post-like").click(function(event){
+            event.preventDefault()
+            const postElement = $(this)
+            const postID = postElement.attr('data-id')
+            const url = postElement.attr('href')
+            const likeBorder = '{{ url_for('static', filename='img/like-border.png') }}'
+            const like = '{{ url_for('static', filename='img/like.png') }}'
+            $.ajax({
+                method: "GET",
+                url: url,
+                success: function(res){
+                    if(res.liked === false){
+                       postElement.children('img').attr('src', likeBorder)
+                    }else if(res.liked === true){
+                        postElement.children('img').attr('src', like)
+                    }
+                    postElement.children('span').text(res.like_count)
+                },
+            })
+        })
     })
 </script>
+
+{% block js_scripts %}
+{% endblock js_scripts %}
 
 </html>
