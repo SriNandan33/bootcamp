@@ -37,7 +37,10 @@ A Minimal social networking application using Flask
 	MAIL_PASSWORD=<your-mail-password>
 	SECRET_KEY=<secret-key>
 	ADMIN_EMAIL=<your-email-address>
-
+	PUSHER_APP_ID = <pusher-app-id>
+	PUSHER_KEY = <pusher-key>
+	PUSHER_SECRET = <pusher-secret>
+	PUSHER_CLUSTER = <pusher-cluster>
 	```
 
 		Note: I am currently using google smtp service to send emails ( will be replaced soon). For testing purspose recipient might want to allow less secure apps to send emails to his account (https://myaccount.google.com/lesssecureapps).
