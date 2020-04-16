@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <table>
+        <tr valign="top">
+            <td><img src="{{ user.avatar(128) }}"></td>
+            <td>
+                <h1>User: {{ user.username }}</h1>
+                {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
+                {% if user.last_seen %}<p>Last seen on: {{ moment(user.last_seen).format('LLL') }}</p>{% endif %}
+                <p><a href="{{ url_for('core.user_followed_and_followers', username=user.username) }}">
+                {{ user.followers.count() }} followers, {{ user.followed.count() }} following.
+                </a></p>
+                {% if user == current_user %}
+                <p><a href="{{ url_for('core.edit_profile')}}">Edit Profile</a></p>
+                {% elif current_user.is_following(user) %}
+                <p><a href="{{ url_for('core.unfollow', username=user.username)}}">Unfollow</a></p>
+                {% else %}
+                <p><a href="{{ url_for('core.follow', username=user.username)}}">Follow</a></p>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+    <hr>
+    <section>
+        <div class="row">
+            <div class="col-md-12" style="height: 100%;">
+                <h4>{{ user.username }}'s followers</h4>
+                <div>
+                    {% for follower in followers %}
+                        {% include '_follower.html' %}
+                    {% endfor %}
+                    {% if followers_prev_url %}
+                    <a href="{{ followers_prev_url}}">Less Followers</a>
+                    {% endif %}
+                    {% if followers_next_url %}
+                    <a href="{{ followers_next_url}}">More Followers</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" style="height: 100%;">
+                <h4>People {{ user.username }}'s following</h4>
+                <div>
+                    {% for followed in followed %}
+                        {% include '_followed.html' %}
+                    {% endfor %}
+                </div>
+                {% if followed_prev_url %}
+                <a href="{{ followed_prev_url}}">Less Followed</a>
+                {% endif %}
+                {% if followed_next_url %}
+                <a href="{{ followed_next_url}}">More Followed</a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

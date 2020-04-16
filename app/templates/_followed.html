@@ -1,0 +1,14 @@
+<table class="table table-hover">
+    <tr valign="top">
+        <td width="70px">
+            <a href="{{ url_for('core.user', username=followed.username) }}">
+                <img src="{{ followed.avatar(70) }}">
+            </a>
+        </td>
+        <td>
+            <a href="{{ url_for('core.user', username=followed.username) }}">
+                {{ followed.username }}
+            </a>
+        </td>
+    </tr>
+</table>

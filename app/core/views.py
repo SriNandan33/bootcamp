@@ -79,7 +79,7 @@ def edit_profile():
         return redirect(url_for('core.user', username=current_user.username))
     elif request.method == 'GET':
         form.username.data = current_user.username
-        form.bio.data = current_user.about_me   
+        form.bio.data = current_user.about_me
     return render_template('edit_profile.html', form=form, title="Edit Profile")
 
 
@@ -119,3 +119,34 @@ def like(post_id):
     liked = post.like(current_user)
     db.session.commit()
     return {"liked": liked, "post_id": post_id, "like_count": post.likes.count()}
+
+@bp.route('/user_followed_and_followers/<username>')
+@login_required
+def user_followed_and_followers(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    followed_page = request.args.get('followed_page', 1, type=int)
+    followers_page = request.args.get('followers_page', 1, type=int)
+    followed = user.followed.paginate(
+        followed_page, current_app.config["FOLLOWED_PER_PAGE"], False
+        )
+    followers = user.followers.paginate(
+        followers_page, current_app.config["FOLLOWERS_PER_PAGE"], False
+        )
+    followed_prev_url = url_for('core.user_followed_and_followers',
+        username=username, followed_page=followed.prev_num) \
+        if followed.has_prev else None
+    followed_next_url = url_for('core.user_followed_and_followers',
+        username=username, followed_page=followed.next_num) \
+        if followed.has_next else None
+    followers_prev_url = url_for('core.user_followed_and_followers',
+        username=username, followers_page=followers.prev_num) \
+        if followers.has_prev else None
+    followers_next_url = url_for('core.user_followed_and_followers',
+        username=username, followers_page=followers.next_num) \
+        if followers.has_next else None
+    return render_template('user_followed_and_followers.html', user=user,
+        followers=followers.items, followed=followed.items,
+        followed_prev_url=followed_prev_url,
+        followed_next_url=followed_next_url,
+        followers_prev_url=followers_prev_url,
+        followers_next_url=followers_next_url)
