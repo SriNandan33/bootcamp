@@ -10,6 +10,7 @@ class Config:
     POSTS_PER_PAGE = 25
     FOLLOWED_PER_PAGE = 5
     FOLLOWERS_PER_PAGE = 5
+    PORT = int(os.environ.get("PORT"))
     # mail config
     MAIL_SERVER = os.environ.get('MAIL_SERVER')
     MAIL_PORT = int(os.environ.get('MAIL_PORT') or 25)

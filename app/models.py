@@ -21,12 +21,14 @@ likes = db.Table('likes',
 
 
 class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = "user"
+    id = db.Column(db.Integer().with_variant(db.Integer(), dialect_name="sqlite"), primary_key=True, autoincrement=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     about_me = db.Column(db.String(140))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    avatar_path = db.Column(db.String(10), index=True, unique=True, nullable=True, default=None)
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     followed = db.relationship(
         'User', 
@@ -42,8 +44,11 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
     def avatar(self, size):
-        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
-        return f'https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}'
+        if self.avatar_path is None:
+            digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+            return f"https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}"
+
+        return self.avatar_path
 
     def follow(self, user):
         if not self.is_following(user):
@@ -91,7 +96,8 @@ def load_user(id):
     return User.query.get(int(id))
 
 class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = "post"
+    id = db.Column(db.Integer().with_variant(db.Integer(), dialect_name="sqlite"), primary_key=True, autoincrement=True)
     body = db.Column(db.String(140))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id')
@@ -117,7 +123,8 @@ class Post(db.Model):
 
 
 class Channel(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = "channel"
+    id = db.Column(db.Integer().with_variant(db.Integer(), dialect_name="sqlite"), primary_key=True, autoincrement=True)
     name = db.Column(db.String(60))
     sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
@@ -127,7 +134,10 @@ class Channel(db.Model):
         channel = cls.query.filter( Channel.sender_id.in_([sender_id, recipient_id]))\
                            .filter( Channel.recipient_id.in_([sender_id, recipient_id]))\
                            .first()
-        if not channel:
+
+        print(channel)
+        if channel is None:
+            print("Couldn't find channel")
             name = f"private-chat_{sender_id}_{recipient_id}"
 
             channel = Channel()
@@ -140,10 +150,11 @@ class Channel(db.Model):
         return channel
 
     def __repr__(self):
-        return '<Channle {}>'.format(self.name)
+        return '<Channel {}>'.format(self.name)
 
 class Message(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    __tablename__ = "message"
+    id = db.Column(db.Integer().with_variant(db.Integer(), dialect_name="sqlite"), primary_key=True, autoincrement=True)
     body = db.Column(db.Text)
     channel_id = db.Column(db.Integer, db.ForeignKey('channel.id'))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)

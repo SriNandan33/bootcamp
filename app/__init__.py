@@ -22,8 +22,12 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    app.app_context().push()
     db.init_app(app)
+    
     migrate.init_app(app, db)
+    db.create_all()
+
     login.init_app(app)
     mail.init_app(app)
     moment.init_app(app)

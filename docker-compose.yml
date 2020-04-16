@@ -1,0 +1,10 @@
+version: '3.7'
+
+services:
+  web:
+    build: ./
+    command: flask run -h 0.0.0.0 -p ${PORT}
+    ports:
+      - ${PORT}:${PORT}
+    env_file:
+      - ./.env
