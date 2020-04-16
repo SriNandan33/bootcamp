@@ -29,7 +29,7 @@ A Minimal social networking application using Flask
 5. **Create .flaskenv file and add required environment variables**
 	```
 	FLASK_APP=run.py
-	FLASK_DEBUG=true
+	FLASK_DEBUG=false
 	MAIL_SERVER=smtp.googlemail.com
 	MAIL_PORT=587
 	MAIL_USE_TLS=1

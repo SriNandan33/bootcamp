@@ -69,6 +69,7 @@ def user_popup(username):
     return render_template('user_popup.html', user=user)
 
 @bp.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
 def edit_profile():
     form = EditProfileForm(current_user.username)
     if form.validate_on_submit():
@@ -84,6 +85,7 @@ def edit_profile():
 
 
 @bp.route('/follow/<username>')
+@login_required
 def follow(username):
     user = User.query.filter_by(username=username).first()
     if not user:
@@ -98,6 +100,7 @@ def follow(username):
     return redirect(url_for("core.user", username=username))
 
 @bp.route('/unfollow/<username>')
+@login_required
 def unfollow(username):
     user = User.query.filter_by(username=username).first()
     if not user:
@@ -112,6 +115,7 @@ def unfollow(username):
     return redirect(url_for('core.user', username=username))
 
 @bp.route('/post/<post_id>/like')
+@login_required
 def like(post_id):
     post = Post.query.filter_by(id=post_id).first()
     if not post:

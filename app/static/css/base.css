@@ -1,0 +1,68 @@
+input[type="submit"]{
+   display: block;
+   background: #5271ff;
+   color: #fff;
+   border: none;
+   padding: 10px 40px;
+   -moz-border-radius: 2px;
+   border-radius: 30px;
+   cursor: pointer;
+}
+.msg_container {
+    color: white;
+    margin-top: auto;
+    margin-bottom: auto;
+    border-radius: 25px;
+    background-color: #82ccdd;
+    padding: 10px;
+    position: relative;
+}
+.msg{
+    display: flex;
+    margin-bottom: 10px;
+    align-items: center;
+}
+.msg_right {
+    justify-content: flex-end; 
+}
+.msg_left {
+    justify-content: flex-start;
+}
+.mr-0{
+    margin: 0;
+}
+.msg-avatar{
+    margin: 0 5px;
+    border-radius: 50%;
+}
+.post-container{
+    display: flex;
+    min-height: 100px;
+    border: 1px solid #e6ecf0;
+    background-color: #fff;
+}
+.post-avatar{
+    text-align: center;
+}
+.post-avatar img{
+    padding: 10px 5px;
+    border-radius: 50%;
+}
+.post-content{
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0px;
+}
+.user_popup a{
+    color: #5577fb;
+}
+.post-timestamp{
+    font-size: 12px;
+    color: #657786;
+}
+.post-like:hover{
+    text-decoration: none;
+}
+.like-count{
+    color: #333;
+}
