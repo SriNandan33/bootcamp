@@ -2,7 +2,7 @@ from flask import render_template, request, flash,\
     redirect, url_for
 from flask_login import current_user, login_user, logout_user
 from werkzeug.urls import url_parse
-
+import os
 from app import db
 from app.auth import bp
 from app.auth.email import send_password_reset_email
@@ -11,6 +11,9 @@ from app.auth.forms import LoginForm, RegistrationForm, PasswordResetRequestForm
 
 @bp.route('/login', methods=["GET", "POST"])
 def login():
+    if not os.path.isfile(".setupcompleted"):
+        return redirect(url_for("setup.setup"))
+
     if current_user.is_authenticated:
         return redirect(url_for('core.index'))
     form = LoginForm()

@@ -26,8 +26,6 @@ def create_app(config_class=Config):
     db.init_app(app)
     
     migrate.init_app(app, db)
-    db.create_all()
-
     login.init_app(app)
     mail.init_app(app)
     moment.init_app(app)
@@ -44,6 +42,9 @@ def create_app(config_class=Config):
 
     from app.chat import bp as chat_bp
     app.register_blueprint(chat_bp, url_prefix="/chat")
+
+    from app.setup import bp as setup_bp
+    app.register_blueprint(setup_bp, url_prefix="/setup")
 
     return app
 

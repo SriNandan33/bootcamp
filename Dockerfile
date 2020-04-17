@@ -15,10 +15,9 @@ RUN pip install -r ./requirements.txt
 
 # copy project
 COPY . /usr/src/
-RUN RUN rm app.db
+RUN rm app.db
 RUN touch app.db
-RUN flask db migrate
 RUN flask db upgrade
-EXPOSE 8000
+EXPOSE 5000
 
-CMD ["gunicorn", "-b", "0.0.0.0:8000", "run"]
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "run"]

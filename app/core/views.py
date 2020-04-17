@@ -6,6 +6,7 @@ from app import db
 from app.core import bp
 from app.core.forms import PostForm, EditProfileForm
 from app.models import User, Post
+import os
 
 @bp.before_request
 def before_request():
@@ -15,23 +16,28 @@ def before_request():
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
-@login_required
 def index():
-    form = PostForm()
-    page = request.args.get('page', 1, type=int)
-    if form.validate_on_submit():
-        post = Post(body=form.post.data, author=current_user)
-        db.session.add(post)
-        db.session.commit()
-        flash("Your post is now live!")
-        return redirect(url_for('core.index'))
-    posts = current_user.feed().paginate(page, current_app.config["POSTS_PER_PAGE"], False)
-    prev_url = url_for('core.index', page=posts.prev_num)\
-        if posts.has_prev else None
-    next_url = url_for('core.index', page=posts.next_num)\
-        if posts.has_next else None
-    return render_template('index.html', title="Feed", posts=posts.items, form=form,\
-        prev_url=prev_url, next_url=next_url)
+    if not os.path.isfile(".setupcompleted"):
+        return redirect(url_for("setup.setup"))
+    else:
+        if current_user.is_authenticated:
+            form = PostForm()
+            page = request.args.get('page', 1, type=int)
+            if form.validate_on_submit():
+                post = Post(body=form.post.data, author=current_user)
+                db.session.add(post)
+                db.session.commit()
+                flash("Your post is now live!")
+                return redirect(url_for('core.index'))
+            posts = current_user.feed().paginate(page, current_app.config["POSTS_PER_PAGE"], False)
+            prev_url = url_for('core.index', page=posts.prev_num)\
+                if posts.has_prev else None
+            next_url = url_for('core.index', page=posts.next_num)\
+                if posts.has_next else None
+            return render_template('index.html', title="Feed", posts=posts.items, form=form,\
+                prev_url=prev_url, next_url=next_url)
+        else:
+            return redirect(url_for("auth.login"))
 
 @bp.route('/explore')
 @login_required

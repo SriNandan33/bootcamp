@@ -8,14 +8,14 @@
         {{ form.hidden_tag() }}
         <p>
             {{ form.username.label}}<br />
-            {{ form.username(size=25)}}
+            {{ form.username(size=25, class_="form-control w-50")}}
             {% for error in form.username.errors %}
                <br /> <span style="color: red;">{{ error }}</span>
             {% endfor %}
         </p>
         <p>
             {{ form.password.label}}<br />
-            {{ form.password(size=25)}}
+            {{ form.password(size=25, class_="form-control w-50")}}
             {% for error in form.password.errors %}
                <br /> <span style="color: red;">{{ error }}</span>
             {% endfor %}
