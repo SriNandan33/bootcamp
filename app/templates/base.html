@@ -9,76 +9,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
         integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet"> 
-        <style type="text/css">
-            input[type="submit"]{
-                   display: block;
-                   background: #5271ff;
-                   color: #fff;
-                   border: none;
-                   padding: 10px 40px;
-                   -moz-border-radius: 2px;
-                   border-radius: 30px;
-                   cursor: pointer;
-                }
-                .msg_container {
-                    color: white;
-                    margin-top: auto;
-                    margin-bottom: auto;
-                    border-radius: 25px;
-                    background-color: #82ccdd;
-                    padding: 10px;
-                    position: relative;
-                }
-                .msg{
-                    display: flex;
-                    margin-bottom: 10px;
-                    align-items: center;
-                }
-                .msg_right {
-                    justify-content: flex-end; 
-                }
-                .msg_left {
-                    justify-content: flex-start;
-                }
-                .mr-0{
-                    margin: 0;
-                }
-                .msg-avatar{
-                    margin: 0 5px;
-                    border-radius: 50%;
-                }
-                .post-container{
-                    display: flex;
-                    min-height: 100px;
-                    border: 1px solid #e6ecf0;
-                    background-color: #fff;
-                }
-                .post-avatar{
-                    text-align: center;
-                }
-                .post-avatar img{
-                    padding: 10px 5px;
-                    border-radius: 50%;
-                }
-                .post-content{
-                    display: flex;
-                    flex-direction: column;
-                    padding: 10px 0px;
-                }
-                .user_popup a{
-                    color: #5577fb;
-                }
-                .post-timestamp{
-                    font-size: 12px;
-                    color: #657786;
-                }
-                .post-like:hover{
-                    text-decoration: none;
-                }
-                .like-count{
-                    color: #333;
-                }
-        </style>
+        <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet"> 
         {% block css %}
         {% endblock css %}
 </head>
@@ -126,7 +57,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
     crossorigin="anonymous"></script>
-<script src="https://js.pusher.com/5.0/pusher.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pusher/5.0.2/pusher.min.js" integrity="sha256-vOxviKM/QBcMYxoY51Rbfk1ePvAeH/PNSRLv1egfhts=" crossorigin="anonymous"></script>
 
 {{ moment.include_moment() }}
 <script>

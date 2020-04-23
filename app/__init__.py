@@ -22,7 +22,9 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    app.app_context().push()
     db.init_app(app)
+    
     migrate.init_app(app, db)
     login.init_app(app)
     mail.init_app(app)
@@ -40,6 +42,9 @@ def create_app(config_class=Config):
 
     from app.chat import bp as chat_bp
     app.register_blueprint(chat_bp, url_prefix="/chat")
+
+    from app.setup import bp as setup_bp
+    app.register_blueprint(setup_bp, url_prefix="/setup")
 
     return app
 

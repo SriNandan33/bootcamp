@@ -6,6 +6,7 @@ from app import db
 from app.core import bp
 from app.core.forms import PostForm, EditProfileForm
 from app.models import User, Post
+import os
 
 @bp.before_request
 def before_request():
@@ -15,23 +16,28 @@ def before_request():
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
-@login_required
 def index():
-    form = PostForm()
-    page = request.args.get('page', 1, type=int)
-    if form.validate_on_submit():
-        post = Post(body=form.post.data, author=current_user)
-        db.session.add(post)
-        db.session.commit()
-        flash("Your post is now live!")
-        return redirect(url_for('core.index'))
-    posts = current_user.feed().paginate(page, current_app.config["POSTS_PER_PAGE"], False)
-    prev_url = url_for('core.index', page=posts.prev_num)\
-        if posts.has_prev else None
-    next_url = url_for('core.index', page=posts.next_num)\
-        if posts.has_next else None
-    return render_template('index.html', title="Feed", posts=posts.items, form=form,\
-        prev_url=prev_url, next_url=next_url)
+    if not os.path.isfile(".setupcompleted"):
+        return redirect(url_for("setup.setup"))
+    else:
+        if current_user.is_authenticated:
+            form = PostForm()
+            page = request.args.get('page', 1, type=int)
+            if form.validate_on_submit():
+                post = Post(body=form.post.data, author=current_user)
+                db.session.add(post)
+                db.session.commit()
+                flash("Your post is now live!")
+                return redirect(url_for('core.index'))
+            posts = current_user.feed().paginate(page, current_app.config["POSTS_PER_PAGE"], False)
+            prev_url = url_for('core.index', page=posts.prev_num)\
+                if posts.has_prev else None
+            next_url = url_for('core.index', page=posts.next_num)\
+                if posts.has_next else None
+            return render_template('index.html', title="Feed", posts=posts.items, form=form,\
+                prev_url=prev_url, next_url=next_url)
+        else:
+            return redirect(url_for("auth.login"))
 
 @bp.route('/explore')
 @login_required
@@ -69,6 +75,7 @@ def user_popup(username):
     return render_template('user_popup.html', user=user)
 
 @bp.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
 def edit_profile():
     form = EditProfileForm(current_user.username)
     if form.validate_on_submit():
@@ -79,11 +86,12 @@ def edit_profile():
         return redirect(url_for('core.user', username=current_user.username))
     elif request.method == 'GET':
         form.username.data = current_user.username
-        form.bio.data = current_user.about_me   
+        form.bio.data = current_user.about_me
     return render_template('edit_profile.html', form=form, title="Edit Profile")
 
 
 @bp.route('/follow/<username>')
+@login_required
 def follow(username):
     user = User.query.filter_by(username=username).first()
     if not user:
@@ -98,6 +106,7 @@ def follow(username):
     return redirect(url_for("core.user", username=username))
 
 @bp.route('/unfollow/<username>')
+@login_required
 def unfollow(username):
     user = User.query.filter_by(username=username).first()
     if not user:
@@ -112,6 +121,7 @@ def unfollow(username):
     return redirect(url_for('core.user', username=username))
 
 @bp.route('/post/<post_id>/like')
+@login_required
 def like(post_id):
     post = Post.query.filter_by(id=post_id).first()
     if not post:
@@ -119,3 +129,34 @@ def like(post_id):
     liked = post.like(current_user)
     db.session.commit()
     return {"liked": liked, "post_id": post_id, "like_count": post.likes.count()}
+
+@bp.route('/user_followed_and_followers/<username>')
+@login_required
+def user_followed_and_followers(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    followed_page = request.args.get('followed_page', 1, type=int)
+    followers_page = request.args.get('followers_page', 1, type=int)
+    followed = user.followed.paginate(
+        followed_page, current_app.config["FOLLOWED_PER_PAGE"], False
+        )
+    followers = user.followers.paginate(
+        followers_page, current_app.config["FOLLOWERS_PER_PAGE"], False
+        )
+    followed_prev_url = url_for('core.user_followed_and_followers',
+        username=username, followed_page=followed.prev_num) \
+        if followed.has_prev else None
+    followed_next_url = url_for('core.user_followed_and_followers',
+        username=username, followed_page=followed.next_num) \
+        if followed.has_next else None
+    followers_prev_url = url_for('core.user_followed_and_followers',
+        username=username, followers_page=followers.prev_num) \
+        if followers.has_prev else None
+    followers_next_url = url_for('core.user_followed_and_followers',
+        username=username, followers_page=followers.next_num) \
+        if followers.has_next else None
+    return render_template('user_followed_and_followers.html', user=user,
+        followers=followers.items, followed=followed.items,
+        followed_prev_url=followed_prev_url,
+        followed_next_url=followed_next_url,
+        followers_prev_url=followers_prev_url,
+        followers_next_url=followers_next_url)

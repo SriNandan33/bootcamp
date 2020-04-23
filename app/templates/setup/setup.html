@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<center>
+    <div style="border: 3px solid rgb(229, 230, 230); margin-top: 30px; margin-right: 20px; margin-left: 20px;">
+    <h1 style="margin-top: 9px; font-family: 'Acme', sans-serif;">Bootcamp Setup</h1>
+    <form action="" method="POST" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.mail_server.label}}<br />
+            {{ form.mail_server(size=25, class_="form-control w-50")}}
+            {% for error in form.mail_server.errors %}
+               <br /> <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.mail_port.label}}<br />
+            {{ form.mail_port(size=25, class_="form-control w-50")}}
+            {% for error in form.mail_port.errors %}
+               <br /> <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.mail_use_tls }} {{ form.mail_use_tls.label}}
+        </p>
+        <p>
+            {{ form.mail_username.label}}<br />
+            {{ form.mail_username(size=25, class_="form-control w-50")}}
+            {% for error in form.mail_username.errors %}
+               <br /> <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.mail_password.label}}<br />
+            {{ form.mail_password(size=25, class_="form-control w-50")}}
+            {% for error in form.mail_password.errors %}
+               <br /> <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.secret_key.label}}<br />
+            {{ form.secret_key(size=25, class_="form-control w-50")}}
+            {% for error in form.secret_key.errors %}
+               <br /> <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.admin_email.label}}<br />
+            {{ form.admin_email(size=25, class_="form-control w-50")}}
+            {% for error in form.admin_email.errors %}
+               <br /> <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.pusher_app_id.label}}<br />
+            {{ form.pusher_app_id(size=25, class_="form-control w-50")}}
+            {% for error in form.pusher_app_id.errors %}
+               <br /> <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.pusher_key.label}}<br />
+            {{ form.pusher_key(size=25, class_="form-control w-50")}}
+            {% for error in form.pusher_key.errors %}
+               <br /> <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.pusher_secret.label}}<br />
+            {{ form.pusher_secret(size=25, class_="form-control w-50")}}
+            {% for error in form.pusher_secret.errors %}
+               <br /> <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.pusher_cluster.label}}<br />
+            {{ form.pusher_cluster(size=25, class_="form-control w-50")}}
+            {% for error in form.pusher_cluster.errors %}
+               <br /> <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p> {{ form.submit() }}</p>
+    </form>
+    </div></center>
+{% endblock content %}
